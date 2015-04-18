@@ -4,7 +4,7 @@ node_js:
 notifications:
     slack: bartr:moNL7Sen4nyyk0W6lWTiQIEv
 install:
-    - "pip install awsebcli"
+    - "sudo pip install awsebcli"
 after_success:
     - "if [ ${TRAVIS_BRANCH} == master ]; then
            eb deploy;

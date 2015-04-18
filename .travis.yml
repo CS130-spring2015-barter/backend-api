@@ -7,5 +7,6 @@ install:
     - "sudo pip install awsebcli"
 after_success:
     - "if [ ${TRAVIS_BRANCH} == master ]; then
+           eb init;
            eb deploy barter;
        fi"

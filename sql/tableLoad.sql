@@ -11,3 +11,13 @@ CREATE TABLE IF NOT EXISTS users (
 	last_password_change timestamp with time zone,
 	date_created timestamp with time zone
 );
+
+CREATE TABLE IF NOT EXISTS items (
+
+	id serial PRIMARY KEY,
+	user_id int REFERENCES users(id),
+	
+	item_description TEXT,
+	item_title varchar(100),
+	item_image bytea
+);

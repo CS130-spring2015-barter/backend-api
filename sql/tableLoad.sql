@@ -1,6 +1,9 @@
 CREATE TABLE IF NOT EXISTS users (
 	id serial PRIMARY KEY,
 
+	first_name varchar(60) NOT NULL,
+	last_name varchar(60) NOT NULL,
+
 	email varchar(254) UNIQUE NOT NULL,
 	hashed_pass varchar(60) NOT NULL,
 
@@ -17,7 +20,7 @@ CREATE TABLE IF NOT EXISTS items (
 	id serial PRIMARY KEY,
 	user_id int REFERENCES users(id),
 	
-	item_description TEXT,
-	item_title varchar(100),
-	item_image bytea
+	item_description TEXT NOT NULL,
+	item_title varchar(100) NOT NULL,
+	item_image bytea NOT NULL
 );

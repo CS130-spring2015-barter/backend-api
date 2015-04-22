@@ -11,17 +11,16 @@ module.exports = function(callback) {
 		//insert a new user into the table
 		db.createUser = function(data, cb) {
 			client.query('INSERT INTO users(first_name, last_name, email, hashed_password) VALUES($1,$2,$3,$4)', [data.first, data.last, data.email, data.hashed_password], function(err, result) {
-					cb(err, result);
-				});
-			};
+				cb(err, result);
+			});
+		};
 
 		//insert a new item into the table
 		db.createItem = function(data, cb) {
 			client.query('INSERT INTO items(item_title, item_description, item_image) VALUES($1,$2,$3)', [data.title, data.image, data.description], function(err, result) {
-					cb(err, result);
-				});
-			};	
-		};
+				cb(err, result);
+			});
+		};	
 
 		//example query 
 		/*client.query('SELECT $1::int AS number', ['1'], function(err, result) {

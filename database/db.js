@@ -17,7 +17,7 @@ module.exports = function(callback) {
 
 		//insert a new item into the table
 		db.createItem = function(data, cb) {
-			client.query('INSERT INTO items(item_title, item_description, item_image) VALUES($1,$2,$3)', [data.title, data.image, data.description], function(err, result) {
+			client.query('INSERT INTO items(user_id, item_title, item_description, item_image) VALUES($1,$2,$3,$4)', [data.uid, data.title, data.image, data.description], function(err, result) {
 				cb(err, result);
 			});
 		};	

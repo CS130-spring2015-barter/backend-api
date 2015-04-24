@@ -4,9 +4,15 @@ node_js:
 notifications:
     slack: bartr:moNL7Sen4nyyk0W6lWTiQIEv
 install:
-    - "sudo pip install awsebcli"
+    - "sudo pip install awsebcli; sudo pip install awscli;"
 after_success:
     - "if [ ${TRAVIS_BRANCH} == master ]; then
            eb init;
            eb deploy barter;
-       fi"
+       fi
+
+       # upload a new swagger doc to s3 if we updated it
+       if [[ -n $(git diff HEAD~1 HEAD doc/swagger.json ]]; then
+         aws s3 cp doc/swagger.json s3://cs130barter/
+       fi
+	    "

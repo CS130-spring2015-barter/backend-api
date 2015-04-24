@@ -13,6 +13,7 @@ after_success:
 
        # upload a new swagger doc to s3 if we updated it
        if [[ -n $(git diff HEAD~1 HEAD doc/swagger.json ]]; then
+         echo 'uploading new swagger doc version to cs130barter bucket';
          aws s3 cp doc/swagger.json s3://cs130barter/
        fi
 	    "

@@ -13,7 +13,10 @@ after_success:
 
        # upload a new swagger doc to s3 if we updated it
        if [[ -n $(git diff HEAD~1 HEAD doc/swagger.json ]]; then
-         echo 'uploading new swagger doc version to cs130barter bucket';
-         aws s3 cp doc/swagger.json s3://cs130barter/
+           aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID;
+           aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY;
+           aws configure set default.region $AWS_DEFAULT_REGION;
+           aws configure set region us-west-1;  
+           aws s3 cp doc/swagger.json s3://cs130barter/
        fi
 	    "

@@ -1,0 +1,239 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "0.0.0",
+        "title": "Barter API"
+    },
+    "paths": {
+        "/items/geo": {
+            "get": {
+                "description": "Fetches geographically sorted items that a given user hasn't seen.",
+                "tags": [
+                    "items"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/items": {
+            "post": {
+                "description": "Creates a new item posting",
+                "tags": [
+                    "items"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/items/{itemId}": {
+            "put": {
+                "description": "Updates an existing item posting",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "itemId",
+                        "description": "ID of item to update",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "items"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Removes a user's previously posted item",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "itemId",
+                        "description": "ID of item to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "items"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/items/liked": {
+            "post": {
+                "description": "Adds items to that have been \"liked\" by a user.",
+                "tags": [
+                    "items"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/items/seen": {
+            "post": {
+                "description": "Adds items to that have been \"seen\" by a user.",
+                "tags": [
+                    "items"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/user": {
+            "post": {
+                "description": "Creates a new user",
+                "tags": [
+                    "user"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/user/{userId}": {
+            "get": {
+                "description": "Gets information for a user",
+                "tags": [
+                    "user"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "userId",
+                        "description": "ID of user to fetch",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "put": {
+                "description": "Edits a user's information",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "userId",
+                        "description": "ID of user to edit",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "user"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "delete": {
+                "description": "Removes a user",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "userId",
+                        "description": "ID of user to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "user"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/user/login": {
+            "post": {
+                "description": "Creates a new user session",
+                "tags": [
+                    "user"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/user/logout": {
+            "post": {
+                "description": "Terminates the current user session",
+                "tags": [
+                    "user"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/chat": {
+            "post": {
+                "description": "Create new chat session",
+                "tags": [
+                    "chat"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/chat/{sessionId}": {
+            "delete": {
+                "description": "Remove chat session",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "sessionId",
+                        "description": "ID of user to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -45,7 +45,7 @@ module.exports = function(callback) {
 
 		//delete an item
 		db.deleteItem = function(data, cb) {
-			client.query('DELETE FROM items WHERE id = $1', [data.iid], function(err, result) {
+			client.query('DELETE FROM items WHERE id = $1', [data.id], function(err, result) {
 				cb(err, result);
 			});
 		};

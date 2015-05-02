@@ -75,7 +75,7 @@
         },
         "/items/liked": {
             "post": {
-                "description": "Adds items to that have been \"liked\" by a user.",
+                "description": "Adds items to that have been \"liked\" by a user. API expects 'itemId' and 'userId' to be in the post body.",
                 "tags": [
                     "items"
                 ],

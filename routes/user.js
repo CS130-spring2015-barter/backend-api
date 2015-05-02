@@ -4,7 +4,9 @@ module.exports = function(db) {
 
 	//logs in a user
 	router.post('/login', function(req, res, next) {
-		db.loginUser(req.body.email, function(err, result) {
+		var data = {}
+		data.email = req.body.email;
+		db.loginUser(data, function(err, result) {
 			if (err) next(err);
 			if (req.body.password === result.hashed_pass)
 				res.send(result.id);

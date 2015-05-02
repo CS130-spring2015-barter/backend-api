@@ -20,7 +20,14 @@ module.exports = function(callback) {
 			client.query('INSERT INTO items(user_id, item_title, item_description, item_image) VALUES($1,$2,$3,$4)', [data.uid, data.title, data.image, data.description], function(err, result) {
 				cb(err, result);
 			});
-		};	
+		};
+
+		//get the password for the user
+		db.loginUser = function(data, cb) {
+			client.query('SELECT hashed_pass, id FROM users WHERE email = $1', [data.uid], function(err, result) {
+				cb(err, result);
+			});
+		};
 
 		//example query 
 		/*client.query('SELECT $1::int AS number', ['1'], function(err, result) {

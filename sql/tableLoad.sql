@@ -16,11 +16,18 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS items (
-
 	id serial PRIMARY KEY,
 	user_id int REFERENCES users(id),
 	
 	item_description TEXT NOT NULL,
 	item_title varchar(100) NOT NULL,
 	item_image bytea NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS seenItems (
+
+	id serial PRIMARY KEY,
+	
+	user_id int REFERENCES users(id) NOT NULL,
+	item_id int REFERENCES items(id) NOT NULL
 );

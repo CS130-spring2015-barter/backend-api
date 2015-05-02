@@ -24,7 +24,7 @@ module.exports = function(callback) {
 
 		//get the password for the user
 		db.loginUser = function(data, cb) {
-			client.query('SELECT hashed_pass, id FROM users WHERE email = $1', [data.uid], function(err, result) {
+			client.query('SELECT hashed_pass, id FROM users WHERE email = $1', [data.email], function(err, result) {
 				cb(err, result);
 			});
 		};

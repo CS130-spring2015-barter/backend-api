@@ -10,7 +10,7 @@ module.exports = function(callback) {
 
 		//insert a new user into the table
 		db.createUser = function(data, cb) {
-			client.query('INSERT INTO users(first_name, last_name, email, hashed_password) VALUES ($1,$2,$3,$4)', [data.first, data.last, data.email, data.hashed_password], function(err, result) {
+			client.query('INSERT INTO users(first_name, last_name, email, hashed_pass) VALUES ($1,$2,$3,$4)', [data.first, data.last, data.email, data.hashed_password], function(err, result) {
 				cb(err, result);
 			});
 		};

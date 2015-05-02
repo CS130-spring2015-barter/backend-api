@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS items (
 	
 	item_description TEXT NOT NULL,
 	item_title varchar(100) NOT NULL,
-	item_image bytea NOT NULL
+	item_image TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS seenItems (

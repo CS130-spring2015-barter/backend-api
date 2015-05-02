@@ -101,14 +101,17 @@
         },
         "/user": {
             "post": {
-                "description": "Creates a new user",
+                "description": "Registers a new user. Expects the HTTP Post request to have fields: 'first', 'last', 'email', and 'hashed_password'.",
                 "tags": [
                     "user"
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
-                    }
+                        "description": "User registered"
+                    },
+					"500": {
+						"description": "User failed to be registered"
+					}
                 }
             }
         },

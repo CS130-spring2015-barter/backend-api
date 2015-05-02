@@ -1,3 +1,4 @@
+#Table of users
 CREATE TABLE IF NOT EXISTS users (
 	id serial PRIMARY KEY,
 
@@ -15,8 +16,9 @@ CREATE TABLE IF NOT EXISTS users (
 	date_created timestamp with time zone
 );
 
+#Table of items 
 CREATE TABLE IF NOT EXISTS items (
-	id serial PRIMARY KEY,
+	id serial PRIMARY KEY ON DELETE CASCADE,
 	user_id int REFERENCES users(id),
 	
 	item_description TEXT NOT NULL,
@@ -24,10 +26,21 @@ CREATE TABLE IF NOT EXISTS items (
 	item_image bytea NOT NULL
 );
 
+#Table for items that have been seen 
 CREATE TABLE IF NOT EXISTS seenItems (
 
 	id serial PRIMARY KEY,
-	
+
 	user_id int REFERENCES users(id) NOT NULL,
 	item_id int REFERENCES items(id) NOT NULL
 );
+
+#Table for items that have been liked
+CREATE TABLE IF NOT EXISTS likedItems (
+
+	id serial PRIMARY KEY,
+
+	user_id int REFERENCES users(id) NOT NULL,
+	item_id int REFERENCES items(id) NOT NULL
+);
+

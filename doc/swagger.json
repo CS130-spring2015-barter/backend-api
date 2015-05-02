@@ -117,7 +117,7 @@
         },
         "/user/{userId}": {
             "get": {
-                "description": "Gets information for a user",
+                "description": "Gets information for a user based off of a passed userId in the URL.",
                 "tags": [
                     "user"
                 ],

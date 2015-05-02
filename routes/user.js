@@ -2,6 +2,15 @@ module.exports = function(db) {
 	var express = require('express');
 	var router = express.Router();
 
+	router.get('/:userId', function(req, res, next) {
+		var data = {};
+		data.id = req.params.userId;
+		db.getUserInfo(data, function(err, userInfo) {
+			if (err) next(err);
+			res.send(userInfo);
+		});
+	});
+
 	//logs in a user
 	router.post('/login', function(req, res, next) {
 		var data = {}

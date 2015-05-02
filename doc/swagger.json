@@ -20,7 +20,7 @@
         },
         "/item": {
             "post": {
-                "description": "Creates a new item posting",
+                "description": "Creates a new item posting. Expects POST body to have fields 'user_id', 'item_description', 'item_title', and 'item_picture'.",
                 "tags": [
                     "item"
                 ],

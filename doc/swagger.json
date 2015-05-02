@@ -5,11 +5,11 @@
         "title": "Barter API"
     },
     "paths": {
-        "/items/geo": {
+        "/item/geo": {
             "get": {
                 "description": "Fetches geographically sorted items that a given user hasn't seen.",
                 "tags": [
-                    "items"
+                    "item"
                 ],
                 "responses": {
                     "200": {
@@ -18,11 +18,11 @@
                 }
             }
         },
-        "/items": {
+        "/item": {
             "post": {
                 "description": "Creates a new item posting",
                 "tags": [
-                    "items"
+                    "item"
                 ],
                 "responses": {
                     "200": {
@@ -31,7 +31,7 @@
                 }
             }
         },
-        "/items/{itemId}": {
+        "/item/{itemId}": {
             "put": {
                 "description": "Updates an existing item posting",
                 "parameters": [
@@ -44,7 +44,7 @@
                     }
                 ],
                 "tags": [
-                    "items"
+                    "item"
                 ],
                 "responses": {
                     "200": {
@@ -64,7 +64,7 @@
                     }
                 ],
                 "tags": [
-                    "items"
+                    "item"
                 ],
                 "responses": {
                     "200": {
@@ -73,11 +73,11 @@
                 }
             }
         },
-        "/items/liked": {
+        "/item/liked": {
             "post": {
                 "description": "Adds items to that have been \"liked\" by a user. API expects 'itemId' and 'userId' to be in the post body.",
                 "tags": [
-                    "items"
+                    "item"
                 ],
                 "responses": {
                     "200": {
@@ -86,11 +86,11 @@
                 }
             }
         },
-        "/items/seen": {
+        "/item/seen": {
             "post": {
                 "description": "Adds items to that have been \"seen\" by a user.",
                 "tags": [
-                    "items"
+                    "item"
                 ],
                 "responses": {
                     "200": {

@@ -52,7 +52,7 @@ module.exports = function(callback) {
 
 		//get user information
 		db.getUserInfo = function(data, cb) {
-			client.query('SELECT first_name, last_name, email, last_logged_on, date_created FROM users WHERE id = $1', [data.uid], function(err, result) {
+			client.query('SELECT first_name, last_name, email, last_logged_on, date_created FROM users WHERE id = $1', [data.id], function(err, result) {
 				cb(err, result);
 			});
 		};		

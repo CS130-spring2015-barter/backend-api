@@ -2,9 +2,15 @@ module.exports = function(db) {
 	var express = require('express');
 	var router = express.Router();
 
-	//login a user
-	router.get('/', function(req, res, next) {
-		res.send('userget');
+	//logs in a user
+	router.post('/login', function(req, res, next) {
+		db.loginUser(req.body.email, function(err, result) {
+			if (err) next(err);
+			if (req.body.password === result.hashed_pass)
+				res.send(result.id);
+			else
+				res.sendStatus(403);
+		});
 	});
 
 	//Register a new user. Values passed will be email address and hashed password.

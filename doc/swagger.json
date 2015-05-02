@@ -179,14 +179,17 @@
         },
         "/user/login": {
             "post": {
-                "description": "Creates a new user session",
+                "description": "Creates a new user session. Returns user ID if successful, otherwise sends a 403 status. Expects 'email' and 'hashed_password' in post body.",
                 "tags": [
                     "user"
                 ],
                 "responses": {
                     "200": {
                         "description": "OK"
-                    }
+                    },
+					"403": {
+						"description": "Login failed."
+					}
                 }
             }
         },

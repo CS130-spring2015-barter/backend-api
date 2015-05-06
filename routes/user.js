@@ -16,6 +16,8 @@ module.exports = function(db) {
 	router.post('/login', function(req, res, next) {
 		var data = {}
 		data.email = req.body.email;
+		data.lat = req.body.lat;
+		data.long = req.body.long;
 		db.loginUser(data, function(err, result) {
 			if (err) next(err);
 			if (req.body.password === result.hashed_pass)

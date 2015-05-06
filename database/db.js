@@ -1,5 +1,5 @@
 var pg = require('pg');
-var conString = "postgres://barter:swipeyswipe@db.raycoll.me/barter";
+var conString = "postgres://barter:swipeyswipe@barterdb.cdqggtkygnqt.us-west-1.rds.amazonaws.com/barter";
 
 var db = {};
 

@@ -7,7 +7,7 @@ module.exports = function(dbObject) {
 	var bodyParser = require('body-parser');
 
 	var user = require('./routes/user')(dbObject);
-	var item = require('./routes/items')(dbObject);
+	var item = require('./routes/item')(dbObject);
 
 	var app = express();
 
@@ -24,7 +24,7 @@ module.exports = function(dbObject) {
 	app.use(express.static(path.join(__dirname, 'public')));
 
 	app.use('/user', user);
-	app.use('/items', item);
+	app.use('/item', item);
 
 	// catch 404 and forward to error handler
 	app.use(function(req, res, next) {

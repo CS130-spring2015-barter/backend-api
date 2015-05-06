@@ -88,7 +88,7 @@
         },
         "/user": {
             "post": {
-                "description": "Registers a new user. Expects the HTTP Post request to have fields: 'first', 'last', 'email', and 'hashed_password'.",
+                "description": "Registers a new user. Expects the HTTP Post request to have fields: 'first', 'last', 'email', 'hashed_password', 'lat', and 'long'.",
                 "tags": [
                     "user"
                 ],
@@ -166,7 +166,7 @@
         },
         "/user/login": {
             "post": {
-                "description": "Creates a new user session. Returns user ID if successful, otherwise sends a 403 status. Expects 'email' and 'hashed_password' in post body.",
+                "description": "Creates a new user session. Returns user ID if successful, otherwise sends a 403 status. Expects 'email', 'hashed_password', 'lat', and 'long' in post body.",
                 "tags": [
                     "user"
                 ],

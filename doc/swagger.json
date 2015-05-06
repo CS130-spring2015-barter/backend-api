@@ -11,6 +11,26 @@
                 "tags": [
                     "item"
                 ],
+				"parameters": [
+					{
+						"name": "userId",
+						"in": "body",
+						"description": "ID of the user we are getting items for.",
+						"type": "integer"
+					},
+					{
+						"name": "long",
+						"in": "body",
+						"description": "Longitude of the device at this moment.",
+						"type": "float"
+					},
+					{
+						"name": "lat",
+						"in": "body",
+						"description": "Latitude of the device at this moment.",
+						"type": "float"
+					}
+				],
                 "responses": {
                     "200": {
                         "description": "OK"

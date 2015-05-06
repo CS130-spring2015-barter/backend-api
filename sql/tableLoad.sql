@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 	email varchar(254) UNIQUE NOT NULL,
 	hashed_pass varchar(60) NOT NULL,
+	location point NOT NULL,
 
 	reset_password_token varchar(40),
 	reset_token_expires timestamp with time zone DEFAULT now() + interval '1 hour',
@@ -22,6 +23,8 @@ CREATE TABLE IF NOT EXISTS items (
 	item_description TEXT NOT NULL,
 	item_title varchar(100) NOT NULL,
 	item_image TEXT NOT NULL
+
+
 );
 
 CREATE TABLE IF NOT EXISTS seenItems (

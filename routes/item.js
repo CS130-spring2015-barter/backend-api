@@ -25,22 +25,12 @@ module.exports = function(db) {
 
 	//create a new item
 	router.post('/', function(req, res, next) {
-		var image = req.body.item_picture;
-		
-		var imageName = uuid.v1();
-		fs.writeFile(imageName, image, function(err) {
+		db.createItem(req.body, function(err, itemCreated) {
 			if (err) next(err);
-
-			//replace the image with the image name which is what we're actually storing in the db.
-			req.body.item_picture = imageName;
-
-			db.createItem(req.body, function(err, itemCreated) {
-				if (err) next(err);
-				if (itemCreated)
-					res.sendStatus(200);
-				else
-					res.sendStatus(500);
-			});
+			if (itemCreated)
+				res.sendStatus(200);
+			else
+				res.sendStatus(500);
 		});
 	});
 

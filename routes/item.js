@@ -44,5 +44,19 @@ module.exports = function(db) {
 		});
 	});
 
+	//delete a specified item
+	router.delete('/:itemId', function(req, res, next) {
+		var data = {};
+		data.id = req.params.itemId;
+
+		db.deleteItem(data, function(err, itemDeleted) {
+			if (err) next(err);
+			if (itemDeleted)
+				res.sendStatus(200);
+			else
+				res.sendStatus(500);
+		});
+	});
+
 	return router;
 };

@@ -1,35 +1,76 @@
 swagger: "2.0"
 info:
-  version: 0.0.0
+  version: 0.1.0
   title: Barter API
 paths:
-  /items/geo:
+  /item/geo:
     get:
-      description: "Fetches geographically sorted items that a given user hasn't seen."
+      parameters:
+        - name: user_id
+          in: query
+          type: string
+          required: true
+          description: User to fetch new items for
+        - name: lat
+          in: query
+          required: true
+          type: number
+          format: double
+        - name: long
+          in: query
+          required: true
+          type: number
+          format: double
+        - name: n
+          description: Maximum number of items to return
+          type: integer
+          required: false
+          in: query
+      description: "Fetches geographically sorted items that a given user hasn't seen. If not specified, maximum number of items returned will be 20"
       tags:
-        - items
+        - item
       responses:
         "200":
           description: OK
-  /items:
+          schema:
+            title: items
+            type: array
+            items: 
+              $ref: "#/definitions/Item"
+  /item:
     post:
-      description: Creates a new item posting
+      parameters: 
+          - in: body
+            name: item_info
+            required: true
+            schema:
+              $ref: "#/definitions/Item"
+      description: "Creates a new item posting"
       tags:
-        - items
+        - item
       responses:
         "200":
           description: OK
-  "/items/{itemId}":
+          schema:
+              title: item_id
+              type: string
+        
+  "/item/{item_id}":
     put:
       description: Updates an existing item posting
       parameters:
         - in: path
-          name: itemId
+          name: item_id
           description: ID of item to update
           required: true
           type: string
+        - in: body
+          name: item_info
+          required: true
+          schema:
+            $ref: "#/definitions/Item"
       tags:
-        - items
+        - item
       responses:
         "200":
           description: OK
@@ -37,47 +78,71 @@ paths:
       description: "Removes a user's previously posted item"
       parameters:
         - in: path
-          name: itemId
+          name: item_id
           description: ID of item to delete
           required: true
           type: string
+        - in: query
+          name: user_id
+          type: string
+          required: true
       tags:
-        - items
+        - item
       responses:
         "200":
           description: OK
-  /items/liked:
+  /item/liked:
     post:
-      description: "Adds items to that have been \"liked\" by a user."
+      parameters:
+        - in: body
+          required: true
+          name: items
+          schema: 
+            $ref: "#/definitions/Liked"
+      description: "Adds items that have been \"liked\" by a user."
       tags:
-        - items
+        - item
       responses:
         "200":
           description: OK
-  /items/seen:
+  /item/seen:
     post:
-      description: "Adds items to that have been \"seen\" by a user."
+      parameters:
+        - in: body
+          required: true
+          name: items
+          schema: 
+            $ref: "#/definitions/Liked"
+      description: "Adds items that have been \"seen\" by a user."
       tags:
-        - items
+        - item
       responses:
         "200":
           description: OK
   /user:
     post:
-      description: Creates a new user
+      parameters:
+        - name: user
+          in: body
+          required: true
+          schema: 
+            $ref: "#/definitions/User"
+      description: "Registers a new user."
       tags:
         - user
       responses:
         "200":
-          description: OK
-  "/user/{userId}":
+          description: User registered
+        "400":
+          description: User failed to be registered
+  "/user/{user_id}":
     get:
       description: Gets information for a user
       tags:
         - user
       parameters:
         - in: path
-          name: userId
+          name: user_id
           description: ID of user to fetch
           required: true
           type: string
@@ -88,7 +153,7 @@ paths:
       description: "Edits a user's information"
       parameters:
         - in: path
-          name: userId
+          name: user_id
           description: ID of user to edit
           required: true
           type: string
@@ -101,7 +166,7 @@ paths:
       description: Removes a user
       parameters:
         - in: path
-          name: userId
+          name: user_id
           description: ID of user to delete
           required: true
           type: string
@@ -112,12 +177,14 @@ paths:
           description: OK
   /user/login:
     post:
-      description: Creates a new user session
+      description: "Creates a new user session. Returns user ID if successful, otherwise sends a 403 status. Expects 'email', 'hashed_password', 'lat', and 'long' in post body."
       tags:
         - user
       responses:
         "200":
           description: OK
+        "403":
+          description: Login failed.
   /user/logout:
     post:
       description: Terminates the current user session
@@ -148,3 +215,39 @@ paths:
       responses:
         "200":
           description: OK
+definitions:
+  Item:
+    properties:
+      user_id:
+        type: string
+      item_title:
+        type: string
+      item_description:
+        type: string
+      item_picture:
+        type: string
+        format: byte
+  Liked: 
+    properties:
+      item_ids:
+        type: array
+        items: 
+          type: string
+      user_id: 
+        type: string
+  User:
+    properties:
+      first:
+        type: string
+      last:
+        type: string
+      email:
+        type: string
+      hashed_password:
+        type: string
+      lat:
+        type: number
+        format: double
+      long:
+        type: number
+        format: double      

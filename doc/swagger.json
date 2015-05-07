@@ -1,95 +1,106 @@
 {
     "swagger": "2.0",
     "info": {
-        "version": "0.0.0",
+        "version": "0.1.0",
         "title": "Barter API"
     },
     "paths": {
         "/item/geo": {
             "get": {
-                "description": "Fetches geographically sorted items that a given user hasn't seen.",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "type": "string",
+                        "required": true,
+                        "description": "User to fetch new items for"
+                    },
+                    {
+                        "name": "lat",
+                        "in": "query",
+                        "required": true,
+                        "type": "number",
+                        "format": "double"
+                    },
+                    {
+                        "name": "long",
+                        "in": "query",
+                        "required": true,
+                        "type": "number",
+                        "format": "double"
+                    },
+                    {
+                        "name": "n",
+                        "description": "Maximum number of items to return",
+                        "type": "integer",
+                        "required": false,
+                        "in": "query"
+                    }
+                ],
+                "description": "Fetches geographically sorted items that a given user hasn't seen. If not specified, maximum number of items returned will be 20",
                 "tags": [
                     "item"
                 ],
-				"parameters": [
-					{
-						"name": "userId",
-						"in": "body",
-						"description": "ID of the user we are getting items for.",
-						"type": "integer"
-					},
-					{
-						"name": "long",
-						"in": "body",
-						"description": "Longitude of the device at this moment.",
-						"type": "float"
-					},
-					{
-						"name": "lat",
-						"in": "body",
-						"description": "Latitude of the device at this moment.",
-						"type": "float"
-					}
-				],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "title": "items",
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Item"
+                            }
+                        }
                     }
                 }
             }
         },
         "/item": {
             "post": {
-                "description": "Creates a new item posting. Expects POST body to have fields 'user_id', 'item_description', 'item_title', and 'item_picture'.",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "item_info",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Item"
+                        }
+                    }
+                ],
+                "description": "Creates a new item posting",
                 "tags": [
                     "item"
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "title": "item_id",
+                            "type": "string"
+                        }
                     }
                 }
             }
         },
-        "/item/{itemId}": {
+        "/item/{item_id}": {
             "put": {
                 "description": "Updates an existing item posting",
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "itemId",
+                        "name": "item_id",
                         "description": "ID of item to update",
                         "required": true,
                         "type": "string"
                     },
                     {
                         "in": "body",
-                        "name": "user_id",
-                        "description": "ID of user associated with item to update",
+                        "name": "item_info",
                         "required": true,
-						"type": "integer"
-					},
-                    {
-                        "in": "body",
-                        "name": "item_description",
-                        "description": "New description of item to update",
-                        "required": true,
-						"type": "string"
-					},
-                    {
-                        "in": "body",
-                        "name": "item_title",
-                        "description": "New title of item to update",
-                        "required": true,
-						"type": "string"
-					},
-                    {
-                        "in": "body",
-                        "name": "item_image",
-                        "description": "New image of item to update",
-                        "required": true,
-						"type": "binary"
-					}
+                        "schema": {
+                            "$ref": "#/definitions/Item"
+                        }
+                    }
                 ],
                 "tags": [
                     "item"
@@ -105,10 +116,16 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "itemId",
+                        "name": "item_id",
                         "description": "ID of item to delete",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "user_id",
+                        "type": "string",
+                        "required": true
                     }
                 ],
                 "tags": [
@@ -123,7 +140,40 @@
         },
         "/item/liked": {
             "post": {
-                "description": "Adds items to that have been \"liked\" by a user. API expects an array named 'itemIds' and single value 'userId' to be in the post body.",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "required": true,
+                        "name": "items",
+                        "schema": {
+                            "$ref": "#/definitions/Liked"
+                        }
+                    }
+                ],
+                "description": "Adds items that have been \"liked\" by a user.",
+                "tags": [
+                    "item"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/item/seen": {
+            "post": {
+                "parameters": [
+                    {
+                        "in": "body",
+                        "required": true,
+                        "name": "items",
+                        "schema": {
+                            "$ref": "#/definitions/Liked"
+                        }
+                    }
+                ],
+                "description": "Adds items that have been \"seen\" by a user.",
                 "tags": [
                     "item"
                 ],
@@ -136,7 +186,17 @@
         },
         "/user": {
             "post": {
-                "description": "Registers a new user. Expects the HTTP Post request to have fields: 'first', 'last', 'email', 'hashed_password', 'lat', and 'long'.",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                ],
+                "description": "Registers a new user.",
                 "tags": [
                     "user"
                 ],
@@ -144,22 +204,22 @@
                     "200": {
                         "description": "User registered"
                     },
-					"500": {
-						"description": "User failed to be registered"
-					}
+                    "400": {
+                        "description": "User failed to be registered"
+                    }
                 }
             }
         },
-        "/user/{userId}": {
+        "/user/{user_id}": {
             "get": {
-                "description": "Gets information for a user based off of a passed userId in the URL.",
+                "description": "Gets information for a user",
                 "tags": [
                     "user"
                 ],
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "userId",
+                        "name": "user_id",
                         "description": "ID of user to fetch",
                         "required": true,
                         "type": "string"
@@ -176,7 +236,7 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "userId",
+                        "name": "user_id",
                         "description": "ID of user to edit",
                         "required": true,
                         "type": "string"
@@ -196,7 +256,7 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "userId",
+                        "name": "user_id",
                         "description": "ID of user to delete",
                         "required": true,
                         "type": "string"
@@ -222,9 +282,9 @@
                     "200": {
                         "description": "OK"
                     },
-					"403": {
-						"description": "Login failed."
-					}
+                    "403": {
+                        "description": "Login failed."
+                    }
                 }
             }
         },
@@ -273,6 +333,62 @@
                     "200": {
                         "description": "OK"
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Item": {
+            "properties": {
+                "user_id": {
+                    "type": "string"
+                },
+                "item_title": {
+                    "type": "string"
+                },
+                "item_description": {
+                    "type": "string"
+                },
+                "item_picture": {
+                    "type": "string",
+                    "format": "byte"
+                }
+            }
+        },
+        "Liked": {
+            "properties": {
+                "item_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "User": {
+            "properties": {
+                "first": {
+                    "type": "string"
+                },
+                "last": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "hashed_password": {
+                    "type": "string"
+                },
+                "lat": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "long": {
+                    "type": "number",
+                    "format": "double"
                 }
             }
         }

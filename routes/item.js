@@ -42,6 +42,18 @@ module.exports = function(db) {
 		});
 	});
 
+	//updates an existing item
+	router.put('/:itemId', function(req, res, next) {
+		req.body.id = req.params.itemId;
+		db.updateItem(req.body, function(err, itemUpdated) {
+			if (err) next(err);
+			if (itemUpdated)
+				res.sendStatus(200);
+			else
+				res.sendStatus(500);
+		});
+	});
+
 	//delete a specified item
 	router.delete('/:itemId', function(req, res, next) {
 		var data = {};

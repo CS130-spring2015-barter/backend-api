@@ -61,7 +61,35 @@
                         "description": "ID of item to update",
                         "required": true,
                         "type": "string"
-                    }
+                    },
+                    {
+                        "in": "body",
+                        "name": "user_id",
+                        "description": "ID of user associated with item to update",
+                        "required": true,
+						"type": "integer"
+					},
+                    {
+                        "in": "body",
+                        "name": "item_description",
+                        "description": "New description of item to update",
+                        "required": true,
+						"type": "string"
+					},
+                    {
+                        "in": "body",
+                        "name": "item_title",
+                        "description": "New title of item to update",
+                        "required": true,
+						"type": "string"
+					},
+                    {
+                        "in": "body",
+                        "name": "item_image",
+                        "description": "New image of item to update",
+                        "required": true,
+						"type": "binary"
+					}
                 ],
                 "tags": [
                     "item"

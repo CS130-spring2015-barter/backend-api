@@ -3,6 +3,14 @@ module.exports = function(db) {
 	var router = express.Router();
 	var uuid = require('node-uuid');
 
+	//get a list of 25 items that the user hasn't seen yet in geographic order
+	router.get('/geo', function(req, res, next) {
+		db.getGeolocatedItems(data, function(err, items) {
+			if (err) next(err);
+			res.send(items);
+		});
+	});
+
 	//set an item as liked by a certain user
 	router.post('/liked', function(req, res, next) {
 		var data = {};

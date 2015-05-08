@@ -5,6 +5,7 @@ module.exports = function(dbObject) {
 	var logger = require('morgan');
 	var cookieParser = require('cookie-parser');
 	var bodyParser = require('body-parser');
+	var multer = require('multer');
 
 	var user = require('./routes/user')(dbObject);
 	var item = require('./routes/item')(dbObject);
@@ -22,6 +23,8 @@ module.exports = function(dbObject) {
 	app.use(bodyParser.urlencoded({ extended: false }));
 	app.use(cookieParser());
 	app.use(express.static(path.join(__dirname, 'public')));
+	app.use(multer({ dest: './public/', inMemory: true}));
+	
 
 	app.use('/user', user);
 	app.use('/item', item);

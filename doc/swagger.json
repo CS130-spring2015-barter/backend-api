@@ -389,10 +389,10 @@
                 "long": {
                     "type": "number",
                     "format": "double"
-                }
+                },
                 "about_me": {
                     "type": "string"
-                }
+                },
                 "image": {
                     "type": "string",
                     "format": "byte"

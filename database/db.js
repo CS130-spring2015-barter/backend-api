@@ -8,6 +8,21 @@ module.exports = function(callback) {
 		if (err)
 			return console.error('error fetching client from pool', err);
 
+		//Returns 15 items closest to the user that he hasn't seen yet
+		db.getLocalItems = function(data, cb) {
+			client.query('SELECT items.id AS id, items.user_id AS userId, item_description, item_title, item_image ' +
+				'FROM items, users, seenitems ' +
+				'WHERE users.id = items.user_id AND ' + //join items to their users
+					'seenitems.user_id = users.id AND ' + //join seenitems to the user
+					'seenitems.item_id != items.id' + //outer join seenitems to items (AKA items that have been seen are excluded from what is returned)
+				'ORDER BY earth_distance(ll_to_earth(users.latitude, users.longitude), ll_to_earth($1, $2)) ' +
+				'LIMIT 15', //limit to 15 items
+				[data.latitude, data.longitude],
+				function(err, result) {
+					cb(err, result);
+			});
+		};
+
 		//insert a new user into the table
 		db.createUser = function(data, cb) {
 			client.query('INSERT INTO users(first_name, last_name, email, hashed_pass, latitude, longitude, about_me, user_image) VALUES ($1,$2,$3,$4,$5,$6,$7,$8', [data.first, data.last, data.email, data.hashed_password, data.long, data.lat, data.about, data.image], function(err, result) 

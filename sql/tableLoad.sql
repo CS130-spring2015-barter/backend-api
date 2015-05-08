@@ -6,9 +6,10 @@ CREATE TABLE IF NOT EXISTS users (
 
 	email varchar(254) UNIQUE NOT NULL,
 	hashed_pass varchar(60) NOT NULL,
+	latitude float NOT NULL,
+	longitude float NOT NULL,
 	about_me TEXT,
 	user_image BYTEA,
-	location point NOT NULL,
 
 	reset_password_token varchar(40),
 	reset_token_expires timestamp with time zone DEFAULT now() + interval '1 hour',
@@ -19,13 +20,12 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS items (
-	id serial PRIMARY KEY ,
+	id serial PRIMARY KEY,
 	user_id int REFERENCES users(id),
 	
 	item_description TEXT NOT NULL,
 	item_title varchar(100) NOT NULL,
 	item_image BYTEA NOT NULL
-
 );
 
 CREATE TABLE IF NOT EXISTS seenItems (

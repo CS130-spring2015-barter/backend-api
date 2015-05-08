@@ -10,15 +10,14 @@ module.exports = function(callback) {
 
 		//Returns N items to the user
 		db.getNItems = function(data, cb) {
-			client.query('SELECT* FROM items LIMIT $1', [data.num], function(err, result) 
-			{
+			client.query('SELECT* FROM items LIMIT $1', [data.num], function(err, result) {
+				cb(err, result.rows);
+			});
+		};
 
-				if (err) {
-					cb(err);
-				}
-				client.query('UPDATE users SET latitude = $1, longitude = $2 WHERE email = $3', [data.lat, data.long, data.email], function(err, updated) {
-					cb(err, result.rows);
-				});
+		db.updateLocation = function(data, cb) {
+			client.query('UPDATE users SET latitude = $1, longitude = $2 WHERE email = $3', [data.lat, data.long, data.email], function(err, result) {
+				cb(err, result)
 			});
 		};
 
@@ -56,7 +55,7 @@ module.exports = function(callback) {
 			client.query('UPDATE users SET first_name = $1, last_name = $2, about_me = $3, user_image = $4 WHERE id = $5', [data.first, data.last, data.about, data.image, data.uid], function(err, result) {
 				cb(err, result);
 			});
-		}
+		};
 
 		//get the password for the user
 		db.loginUser = function(data, cb) {
@@ -104,7 +103,7 @@ module.exports = function(callback) {
 			client.query('UPDATE items SET item_description = $1, item_title = $2, item_image = $3 WHERE id = $4', [data.description, data.title, data.image, data.iid], function(err, result) {
 				cb(err, result);
 			});
-		}
+		};
 	
 		//example query 
 		/*client.query('SELECT $1::int AS number', ['1'], function(err, result) {

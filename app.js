@@ -23,7 +23,7 @@ module.exports = function(dbObject) {
 	app.use(bodyParser.urlencoded({ extended: false }));
 	app.use(cookieParser());
 	app.use(express.static(path.join(__dirname, 'public')));
-	app.use(multer({ dest: './public/', inMemory: true}));
+	app.use(multer({ dest: './public/images/', inMemory: true}));
 	
 
 	app.use('/user', user);

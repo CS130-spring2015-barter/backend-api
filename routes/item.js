@@ -5,7 +5,9 @@ module.exports = function(db) {
 
 	//get a list of 25 items that the user hasn't seen yet in geographic order
 	router.get('/geo', function(req, res, next) {
-		db.getNItems(req.body, function(err, items) {
+		var data = {}
+		data.num = 15;
+		db.getNItems(data, function(err, items) {
 			res.send(items);
 		});
 		/*

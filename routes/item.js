@@ -40,8 +40,16 @@ module.exports = function(db) {
 
 	//create a new item
 	router.post('/', function(req, res, next) {
-		db.createItem(req.body, function(err, itemCreated) {
-			if (err) next(err);
+
+		var data = {
+			uid: req.body.user_id,
+			title: req.body.item_title,
+			image: req.files.item_picture.buffer,
+			description: req.body.item_description
+		};
+
+		db.createItem(data, function(err, itemCreated) {
+			if (err) console.log(err);
 			if (itemCreated)
 				res.sendStatus(200);
 			else

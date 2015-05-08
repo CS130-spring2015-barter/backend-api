@@ -28,7 +28,8 @@ module.exports = function(callback) {
 		db.loginUser = function(data, cb) {
 			client.query('SELECT hashed_pass, id FROM users WHERE email = $1', [data.email], function(err, result) 
 			{
-				if (err) {
+				if (err) 
+				{
 					cb(err, result);
 				}
 				client.query('UPDATE users SET location = ($1,$2) WHERE email = $3', [data.long, data.lat, data.email], function(err, result)
@@ -41,6 +42,14 @@ module.exports = function(callback) {
 		//add an item that has been liked
 		db.addItemLiked = function(data, cb) {
 			client.query('INSERT INTO likedItems(user_id, item_id) VALUES ($1,$2)', [data.uid, data.iid], function(err, result) 
+			{
+				cb(err, result);
+			});
+		};
+
+		//add an item that has been seen
+		db.addItemSeen = function(data, cb) {
+			client.query('INSERT INTO seenItems(user_id, item_id) VALUES ($1,$2)', [data.uid, data.iid], function(err, result) 
 			{
 				cb(err, result);
 			});
@@ -60,7 +69,7 @@ module.exports = function(callback) {
 			{
 				cb(err, result);
 			});
-		};		
+		};	
 		//example query 
 		/*client.query('SELECT $1::int AS number', ['1'], function(err, result) {
 			// call `done()` to release the client back to the pool 

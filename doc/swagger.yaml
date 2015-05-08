@@ -21,7 +21,7 @@ paths:
           required: true
           type: number
           format: double
-        - name: n
+        - name: "n"
           description: Maximum number of items to return
           type: integer
           required: false
@@ -35,26 +35,25 @@ paths:
           schema:
             title: items
             type: array
-            items: 
+            items:
               $ref: "#/definitions/Item"
   /item:
     post:
-      parameters: 
-          - in: body
-            name: item_info
-            required: true
-            schema:
-              $ref: "#/definitions/Item"
-      description: "Creates a new item posting"
+      parameters:
+        - in: body
+          name: item_info
+          required: true
+          schema:
+            $ref: "#/definitions/Item"
+      description: Creates a new item posting
       tags:
         - item
       responses:
         "200":
           description: OK
           schema:
-              title: item_id
-              type: string
-        
+            title: item_id
+            type: string
   "/item/{item_id}":
     put:
       description: Updates an existing item posting
@@ -97,7 +96,7 @@ paths:
         - in: body
           required: true
           name: items
-          schema: 
+          schema:
             $ref: "#/definitions/Liked"
       description: "Adds items that have been \"liked\" by a user."
       tags:
@@ -111,7 +110,7 @@ paths:
         - in: body
           required: true
           name: items
-          schema: 
+          schema:
             $ref: "#/definitions/Liked"
       description: "Adds items that have been \"seen\" by a user."
       tags:
@@ -125,9 +124,9 @@ paths:
         - name: user
           in: body
           required: true
-          schema: 
+          schema:
             $ref: "#/definitions/User"
-      description: "Registers a new user."
+      description: Registers a new user.
       tags:
         - user
       responses:
@@ -149,6 +148,12 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            title: first
+            type: string
+            title: last
+            type: string
+            
     put:
       description: "Edits a user's information"
       parameters:
@@ -157,6 +162,11 @@ paths:
           description: ID of user to edit
           required: true
           type: string
+        - in: body
+          name: user_info
+          required: true
+          schema: 
+            $ref: "#/definitions/UserEdit"
       tags:
         - user
       responses:
@@ -194,8 +204,29 @@ paths:
         "200":
           description: OK
   /chat:
+    get:
+      description: Retrieves id for chat session between two users
+      parameters:
+        - in: body
+          name: chat_users
+          schema:
+            type: array
+            items:
+              title: user_id
+              type: string      
+      responses:
+        "200":
+          description: OK
     post:
       description: Create new chat session
+      parameters:
+        - in: body
+          name: chat_users
+          schema:
+            type: array
+            items:
+              title: user_id
+              type: string
       tags:
         - chat
       responses:
@@ -207,7 +238,7 @@ paths:
       parameters:
         - in: path
           name: sessionId
-          description: ID of user to delete
+          description: ID of session to delete
           required: true
           type: string
       tags:
@@ -217,6 +248,11 @@ paths:
           description: OK
 definitions:
   Item:
+    required:
+      - user_id
+      - item_title
+      - item_description
+      - item_picture
     properties:
       user_id:
         type: string
@@ -227,15 +263,24 @@ definitions:
       item_picture:
         type: string
         format: byte
-  Liked: 
+  Liked:
+    required:
+      - user_id
     properties:
       item_ids:
         type: array
-        items: 
+        items:
           type: string
-      user_id: 
+      user_id:
         type: string
   User:
+    required:
+      - first
+      - last
+      - email
+      - hashed_password
+      - lat
+      - long
     properties:
       first:
         type: string
@@ -250,4 +295,38 @@ definitions:
         format: double
       long:
         type: number
-        format: double      
+        format: double
+      about_me:
+        type: string
+      image:
+        type: string
+        format: byte
+  UserEdit:
+    properties:
+      first:
+        type: string
+        minimum: 0
+      last:
+        type: string
+        minimum: 0
+      email:
+        type: string
+        minimum: 0
+      hashed_password:
+        type: string
+        minimum: 0
+      lat:
+        type: number
+        format: double
+        minimum: 0
+      long:
+        type: number
+        format: double
+        minimum: 0
+      about_me:
+        type: string
+        minimum: 0
+      image:
+        type: string
+        format: byte
+        minimum: 0

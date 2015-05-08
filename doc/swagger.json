@@ -227,7 +227,11 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "title": "last",
+                            "type": "string"
+                        }
                     }
                 }
             },
@@ -240,6 +244,14 @@
                         "description": "ID of user to edit",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "user_info",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserEdit"
+                        }
                     }
                 ],
                 "tags": [
@@ -302,8 +314,42 @@
             }
         },
         "/chat": {
+            "get": {
+                "description": "Retrieves id for chat session between two users",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "chat_users",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "title": "user_id",
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
             "post": {
                 "description": "Create new chat session",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "chat_users",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "title": "user_id",
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
                 "tags": [
                     "chat"
                 ],
@@ -321,7 +367,7 @@
                     {
                         "in": "path",
                         "name": "sessionId",
-                        "description": "ID of user to delete",
+                        "description": "ID of session to delete",
                         "required": true,
                         "type": "string"
                     }
@@ -339,6 +385,12 @@
     },
     "definitions": {
         "Item": {
+            "required": [
+                "user_id",
+                "item_title",
+                "item_description",
+                "item_picture"
+            ],
             "properties": {
                 "user_id": {
                     "type": "string"
@@ -356,6 +408,9 @@
             }
         },
         "Liked": {
+            "required": [
+                "user_id"
+            ],
             "properties": {
                 "item_ids": {
                     "type": "array",
@@ -369,6 +424,14 @@
             }
         },
         "User": {
+            "required": [
+                "first",
+                "last",
+                "email",
+                "hashed_password",
+                "lat",
+                "long"
+            ],
             "properties": {
                 "first": {
                     "type": "string"
@@ -396,6 +459,45 @@
                 "image": {
                     "type": "string",
                     "format": "byte"
+                }
+            }
+        },
+        "UserEdit": {
+            "properties": {
+                "first": {
+                    "type": "string",
+                    "minimum": 0
+                },
+                "last": {
+                    "type": "string",
+                    "minimum": 0
+                },
+                "email": {
+                    "type": "string",
+                    "minimum": 0
+                },
+                "hashed_password": {
+                    "type": "string",
+                    "minimum": 0
+                },
+                "lat": {
+                    "type": "number",
+                    "format": "double",
+                    "minimum": 0
+                },
+                "long": {
+                    "type": "number",
+                    "format": "double",
+                    "minimum": 0
+                },
+                "about_me": {
+                    "type": "string",
+                    "minimum": 0
+                },
+                "image": {
+                    "type": "string",
+                    "format": "byte",
+                    "minimum": 0
                 }
             }
         }

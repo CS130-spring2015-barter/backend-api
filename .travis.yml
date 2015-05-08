@@ -9,7 +9,7 @@ before_script:
 notifications:
     slack: bartr:moNL7Sen4nyyk0W6lWTiQIEv
 install:
-    - "sudo pip install awsebcli; sudo pip install awscli;"
+    - "npm install; sudo pip install awsebcli; sudo pip install awscli;"
 after_success:
     - "if [ ${TRAVIS_BRANCH} == master ]; then
            eb init;

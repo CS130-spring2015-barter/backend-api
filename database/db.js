@@ -8,6 +8,19 @@ module.exports = function(callback) {
 		if (err)
 			return console.error('error fetching client from pool', err);
 
+		//Returns N items to the user
+		db.getNItems = function(data, cb) {
+			client.query('SELECT* FROM items LIMIT $1', [data.num], function(err, result) 
+			{
+				if (err) {
+					cb(err, result);
+				}
+				client.query('UPDATE users SET latitude = $1, longitude = $2 WHERE email = $3', [data.lat, data.long, data.email], function(err, result) {
+					cb(err, result);
+				});
+			});
+		};
+
 		//Returns 15 items closest to the user that he hasn't seen yet
 		db.getLocalItems = function(data, cb) {
 			client.query('SELECT items.id AS id, items.user_id AS userId, item_description, item_title, item_image ' +
@@ -25,16 +38,14 @@ module.exports = function(callback) {
 
 		//insert a new user into the table
 		db.createUser = function(data, cb) {
-			client.query('INSERT INTO users(first_name, last_name, email, hashed_pass, latitude, longitude, about_me, user_image) VALUES ($1,$2,$3,$4,$5,$6,$7,$8', [data.first, data.last, data.email, data.hashed_password, data.long, data.lat, data.about, data.image], function(err, result) 
-			{
+			client.query('INSERT INTO users(first_name, last_name, email, hashed_pass, latitude, longitude, about_me, user_image) VALUES ($1,$2,$3,$4,$5,$6,$7,$8', [data.first, data.last, data.email, data.hashed_password, data.long, data.lat, data.about, data.image], function(err, result) {
 				cb(err, result);
 			});
 		};
 
 		//get user information
 		db.getUserInfo = function(data, cb) {
-			client.query('SELECT first_name, last_name, email, last_logged_on, date_created, latitude, longitude, about_me, user_image FROM users WHERE id = $1', [data.id], function(err, result) 
-			{
+			client.query('SELECT first_name, last_name, email, last_logged_on, date_created, latitude, longitude, about_me, user_image FROM users WHERE id = $1', [data.id], function(err, result) {
 				cb(err, result);
 			});
 		};
@@ -50,12 +61,10 @@ module.exports = function(callback) {
 		db.loginUser = function(data, cb) {
 			client.query('SELECT hashed_pass, id FROM users WHERE email = $1', [data.email], function(err, result) 
 			{
-				if (err) 
-				{
+				if (err)  {
 					cb(err, result);
 				}
-				client.query('UPDATE users SET location = ($1,$2) WHERE email = $3', [data.long, data.lat, data.email], function(err, result)
-				{
+				client.query('UPDATE users SET latitude = $1, longitude = $2 WHERE email = $3', [data.lat, data.long, data.email], function(err, result) {
 					cb(err, result);
 				});
 			});
@@ -63,32 +72,28 @@ module.exports = function(callback) {
 
 		//insert a new item into the table
 		db.createItem = function(data, cb) {
-			client.query('INSERT INTO items(user_id, item_title, item_description, item_image) VALUES ($1,$2,$3,$4)', [data.uid, data.title, data.image, data.description], function(err, result) 
-			{
+			client.query('INSERT INTO items(user_id, item_title, item_description, item_image) VALUES ($1,$2,$3,$4)', [data.uid, data.title, data.image, data.description], function(err, result) {
 				cb(err, result);
 			});
 		};
 
 		//add an item that has been liked
 		db.addItemLiked = function(data, cb) {
-			client.query('INSERT INTO likedItems(user_id, item_id) VALUES ($1,$2)', [data.uid, data.iid], function(err, result) 
-			{
+			client.query('INSERT INTO likedItems(user_id, item_id) VALUES ($1,$2)', [data.uid, data.iid], function(err, result) {
 				cb(err, result);
 			});
 		};
 
 		//add an item that has been seen
 		db.addItemSeen = function(data, cb) {
-			client.query('INSERT INTO seenItems(user_id, item_id) VALUES ($1,$2)', [data.uid, data.iid], function(err, result) 
-			{
+			client.query('INSERT INTO seenItems(user_id, item_id) VALUES ($1,$2)', [data.uid, data.iid], function(err, result) {
 				cb(err, result);
 			});
 		};
 
 		//delete an item
 		db.deleteItem = function(data, cb) {
-			client.query('DELETE FROM items WHERE id = $1', [data.id], function(err, result) 
-			{
+			client.query('DELETE FROM items WHERE id = $1', [data.id], function(err, result) {
 				cb(err, result);
 			});
 		};

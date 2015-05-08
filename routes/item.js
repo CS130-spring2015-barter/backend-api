@@ -5,10 +5,15 @@ module.exports = function(db) {
 
 	//get a list of 25 items that the user hasn't seen yet in geographic order
 	router.get('/geo', function(req, res, next) {
+		db.getNItems(req.body, function(err, items) {
+			res.send(items);
+		});
+		/*
 		db.getGeolocatedItems(data, function(err, items) {
 			if (err) next(err);
 			res.send(items);
 		});
+		*/
 	});
 
 	//set an item as liked by a certain user

@@ -316,6 +316,9 @@
         "/chat": {
             "get": {
                 "description": "Retrieves id for chat session between two users",
+                "tags": [
+                    "chat"
+                ],
                 "parameters": [
                     {
                         "in": "body",

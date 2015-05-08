@@ -12,8 +12,9 @@ module.exports = function(callback) {
 		db.getNItems = function(data, cb) {
 			client.query('SELECT* FROM items LIMIT $1', [data.num], function(err, result) 
 			{
+
 				if (err) {
-					cb(err, result);
+					cb(err, result.rows);
 				}
 				client.query('UPDATE users SET latitude = $1, longitude = $2 WHERE email = $3', [data.lat, data.long, data.email], function(err, result) {
 					cb(err, result);

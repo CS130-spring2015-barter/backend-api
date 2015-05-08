@@ -14,10 +14,10 @@ module.exports = function(callback) {
 			{
 
 				if (err) {
-					cb(err, result.rows);
+					cb(err);
 				}
-				client.query('UPDATE users SET latitude = $1, longitude = $2 WHERE email = $3', [data.lat, data.long, data.email], function(err, result) {
-					cb(err, result);
+				client.query('UPDATE users SET latitude = $1, longitude = $2 WHERE email = $3', [data.lat, data.long, data.email], function(err, updated) {
+					cb(err, result.rows);
 				});
 			});
 		};

@@ -1,6 +1,11 @@
 language: node_js
 node_js:
     - "0.10"
+addons:
+    postgresql: "9.3"
+# user is postgres, no password reqd
+before_script:
+    - psql -c 'create database travis_ci_test;' -U postgres
 notifications:
     slack: bartr:moNL7Sen4nyyk0W6lWTiQIEv
 install:

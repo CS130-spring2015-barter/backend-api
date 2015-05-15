@@ -167,10 +167,12 @@
                     {
                         "in": "body",
                         "required": true,
-                        "name": "items",
-                        "schema": {
-                            "$ref": "#/definitions/Liked"
-                        }
+                        "name": "item_ids",
+                    },
+                    {
+                        "in": "body",
+                        "required": true,
+                        "name": "user_id",
                     }
                 ],
                 "description": "Adds items that have been \"seen\" by a user.",

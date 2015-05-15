@@ -44,6 +44,19 @@ module.exports = function(dbObject) {
 			})
 		}));
 
+	// setup passport jwt
+	var JwtStrategy = require('passport-jwt').Strategy;
+	var opts = {}
+	opts.secretOrKey = 'testsecretdontusethis';
+	passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
+			if (jwt_payload.email) {
+				return done(null, jwt_payload);
+			}
+			else {
+				return done(null,false,{message: "Invalid token: No such user"});
+			}
+	}));
+
 	// uncomment after placing your favicon in /public
 	//app.use(favicon(__dirname + '/public/favicon.ico'));
 	app.use(logger('dev'));

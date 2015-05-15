@@ -1,5 +1,10 @@
 var pg = require('pg');
-var conString = "postgres://barter:swipeyswipe@barterdb.cdqggtkygnqt.us-west-1.rds.amazonaws.com/barter";
+if (process.env.ENVIRONMENT == "PRODUCTION") {
+	var conString = "postgres://barter:swipeyswipe@barterdb.cdqggtkygnqt.us-west-1.rds.amazonaws.com/barter";
+}
+else {
+	var conString = "postgres://barter:swipeyswipe@localhost/barter"
+}
 
 var db = {};
 
@@ -38,7 +43,7 @@ module.exports = function(callback) {
 
 		//insert a new user into the table
 		db.createUser = function(data, cb) {
-			client.query('INSERT INTO users(first_name, last_name, email, hashed_pass, latitude, longitude, about_me, user_image) VALUES ($1,$2,$3,$4,$5,$6,$7,$8', [data.first, data.last, data.email, data.hashed_password, data.long, data.lat, data.about, data.image], function(err, result) {
+			client.query('INSERT INTO users(first_name, last_name, email, hashed_pass, latitude, longitude) VALUES ($1,$2,$3,$4,$5,$6)', [data.first, data.last, data.email, data.password, 0, 0], function(err, result) {
 				cb(err, result);
 			});
 		};
@@ -58,17 +63,15 @@ module.exports = function(callback) {
 		};
 
 		//get the password for the user
-		db.loginUser = function(data, cb) {
-			client.query('SELECT hashed_pass, id FROM users WHERE email = $1', [data.email], function(err, result) 
+		db.getPass = function(email, cb) {
+			client.query('SELECT hashed_pass FROM users WHERE email = $1', [email], function(err, result)
 			{
-				if (err)  {
 					cb(err, result);
-				}
+			})};
+				/*
 				client.query('UPDATE users SET latitude = $1, longitude = $2 WHERE email = $3', [data.lat, data.long, data.email], function(err, result) {
 					cb(err, result);
-				});
-			});
-		};
+				}); */
 
 		//insert a new item into the table
 		db.createItem = function(data, cb) {
@@ -104,10 +107,10 @@ module.exports = function(callback) {
 				cb(err, result);
 			});
 		};
-	
-		//example query 
+
+		//example query
 		/*client.query('SELECT $1::int AS number', ['1'], function(err, result) {
-			// call `done()` to release the client back to the pool 
+			// call `done()` to release the client back to the pool
 			done();
 			if(err) {
 				return console.error('error running query', err);

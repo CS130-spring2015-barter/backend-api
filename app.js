@@ -1,6 +1,7 @@
 module.exports = function(dbObject) {
 	var express = require('express');
 	var path = require('path');
+	var bcrypt = require('bcrypt');
 	var passport = require('passport');
 	var favicon = require('serve-favicon');
 	var logger = require('morgan');
@@ -10,7 +11,6 @@ module.exports = function(dbObject) {
 	var LocalStrategy   = require('passport-local').Strategy;
 	var user = require('./routes/user')(dbObject);
 	var item = require('./routes/item')(dbObject);
-
 	var app = express();
 
 	// view engine setup
@@ -18,10 +18,20 @@ module.exports = function(dbObject) {
 	app.set('view engine', 'jade');
 
 	// setup passport local
-	passport.use(new LocalStrategy(
-  function(username, password, done) {
-      return done(null, {username: username, password: password});
-  }));
+	passport.use(new LocalStrategy({
+		usernameField : 'email',
+		passwordField: 'password'
+	},
+  function(email, password, done) {
+			dbObject.getPass(email, function(err, pass) {
+				if (err) {
+					return done(err);
+				}
+				else {
+					return done(null, {email: email, password: password});
+				}
+			})
+		}));
 
 	// uncomment after placing your favicon in /public
 	//app.use(favicon(__dirname + '/public/favicon.ico'));

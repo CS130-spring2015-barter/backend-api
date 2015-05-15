@@ -1,5 +1,6 @@
 module.exports = function(db) {
 	var express = require('express');
+	var passport = require('passport');
 	var router = express.Router();
 
 	//gets user info for a specific :userId
@@ -12,20 +13,20 @@ module.exports = function(db) {
 		});
 	});
 
-	//logs in a user
-	router.post('/login', function(req, res, next) {
-		var data = {}
-		data.email = req.body.email;
-		data.lat = req.body.lat;
-		data.long = req.body.long;
-		db.loginUser(data, function(err, result) {
-			if (err) next(err);
-			if (req.body.password === result.hashed_pass)
-				res.send(result.id);
-			else
-				res.sendStatus(403);
-		});
+
+router.post('/login', function(req, res, next) {
+	  passport.authenticate('local', function(err, user, info) {
+	    if (err) {
+	      return next(err);
+	    }
+	    // Generate a JSON response reflecting authentication status
+	    if (!user) {
+	      return res.send({ success : false, message : 'authentication failed' });
+	    }
+	    return res.send(user);
+	  })(req, res, next);
 	});
+
 
 	//Register a new user. Values passed will be email address and hashed password.
 	//All values will be in req.body

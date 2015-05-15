@@ -1,12 +1,13 @@
 module.exports = function(dbObject) {
 	var express = require('express');
 	var path = require('path');
+	var passport = require('passport');
 	var favicon = require('serve-favicon');
 	var logger = require('morgan');
 	var cookieParser = require('cookie-parser');
 	var bodyParser = require('body-parser');
 	var multer = require('multer');
-
+	var LocalStrategy   = require('passport-local').Strategy;
 	var user = require('./routes/user')(dbObject);
 	var item = require('./routes/item')(dbObject);
 
@@ -16,6 +17,12 @@ module.exports = function(dbObject) {
 	app.set('views', path.join(__dirname, 'views'));
 	app.set('view engine', 'jade');
 
+	// setup passport local
+	passport.use(new LocalStrategy(
+  function(username, password, done) {
+      return done(null, {username: username, password: password});
+  }));
+
 	// uncomment after placing your favicon in /public
 	//app.use(favicon(__dirname + '/public/favicon.ico'));
 	app.use(logger('dev'));
@@ -24,7 +31,7 @@ module.exports = function(dbObject) {
 	app.use(cookieParser());
 	app.use(express.static(path.join(__dirname, 'public')));
 	app.use(multer({ dest: './public/images/', inMemory: true}));
-	
+
 
 	app.use('/user', user);
 	app.use('/item', item);

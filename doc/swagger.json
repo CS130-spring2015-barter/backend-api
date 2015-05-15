@@ -412,7 +412,7 @@
         },
         "Liked": {
             "required": [
-                "user_id"
+                "item_ids"
             ],
             "properties": {
                 "item_ids": {
@@ -420,9 +420,6 @@
                     "items": {
                         "type": "string"
                     }
-                },
-                "user_id": {
-                    "type": "string"
                 }
             }
         },

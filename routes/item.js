@@ -1,7 +1,6 @@
 module.exports = function(db) {
 	var express = require('express');
 	var router = express.Router();
-	var uuid = require('node-uuid');
 
 	//get a list of 25 items that the user hasn't seen yet in geographic order
 	router.get('/geo', function(req, res, next) {

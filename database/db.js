@@ -86,8 +86,8 @@ module.exports = function(callback) {
 
 		//add an item that has been seen
 		db.addItemSeen = function(data, cb) {
-			client.query('INSERT INTO seenItems(user_id, item_id) VALUES ($1,$2)', [data.uid, data.iid], function(err, result) {
-				cb(err, result);
+			client.query('INSERT INTO seenItems (user_id, item_id) VALUES ($1,$2)', [data.uid, data.iid], function(err, result) {
+				cb(err, result.rowCount);
 			});
 		};
 

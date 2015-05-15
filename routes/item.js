@@ -20,9 +20,10 @@ module.exports = function(db) {
 
 	//set an item as liked by a certain user
 	router.post('/liked', function(req, res, next) {
-		var data = {};
-		data.uid = req.body.userId;
-		data.likesRegistered = true;
+		var data = {
+			uid: req.body.itemId,
+			likesRegistered: true
+		};
 		for (var x = 0; x < req.body.itemIds; x++) {
 			data.iid = req.body.itemIds[x];
 			db.addItemLiked(data, function(err, itemLikeRegistered) {

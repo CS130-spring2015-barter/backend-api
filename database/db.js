@@ -11,7 +11,13 @@ module.exports = function(callback) {
 		//Returns N items to the user
 		db.getNItems = function(data, cb) {
 			client.query('SELECT* FROM items LIMIT $1', [data.num], function(err, result) {
-				cb(err, result.rows);
+				var items = result.rows;
+				for (var i = 0; i < items.length; i++) {
+					var octArray = items[i].item_image.data;
+					var buf = new Buffer(octArray);
+					items[i].item_image.data = buf;
+				}
+				cb(err, items);
 			});
 		};
 
@@ -32,7 +38,13 @@ module.exports = function(callback) {
 				'LIMIT 15', //limit to 15 items
 				[data.latitude, data.longitude],
 				function(err, result) {
-					cb(err, result);
+					var items = result.rows;
+					for (var i = 0; i < items.length; i++) {
+						var octArray = items[i].item_image.data;
+						var buf = new Buffer(octArray);
+						items[i].item_image.data = buf;
+					}
+					cb(err, items);
 			});
 		};
 

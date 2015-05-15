@@ -21,22 +21,21 @@ router.post('/login', function(req, res, next) {
 	    }
 	    // Generate a JSON response reflecting authentication status
 	    if (!user) {
-	      return res.send({ success : false, message : 'authentication failed' });
+	      return res.status(401).send(info);
 	    }
 	    return res.send(user);
 	  })(req, res, next);
 	});
 
 
-	//Register a new user. Values passed will be email address and hashed password.
+	//Register a new user. Values passed will be email address and password.
 	//All values will be in req.body
 	router.post('/', function(req, res, next) {
 		db.createUser(req.body, function(err, userRegistered) {
-			if (err) next(err);
-			if (userRegistered)
-				res.sendStatus(200);
-			else
-				res.sendStatus(500);
+			if (err) {
+				return next(err);
+			}
+			res.send(200);
 		});
 	});
 

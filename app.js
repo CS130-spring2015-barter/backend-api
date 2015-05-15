@@ -22,13 +22,24 @@ module.exports = function(dbObject) {
 		usernameField : 'email',
 		passwordField: 'password'
 	},
-  function(email, password, done) {
-			dbObject.getPass(email, function(err, pass) {
+  function(email, reqPassword, done) {
+			dbObject.getPass(email, function(err, result) {
 				if (err) {
 					return done(err);
 				}
 				else {
-					return done(null, {email: email, password: password});
+					if (!result.rows.length) {
+						return done(null, false, {message: "Invalid email"});
+					}
+
+					userPassword = result.rows[0].hashed_pass;
+					// password match
+					if (userPassword == reqPassword) {
+							return done(null, {email: email, password: reqPassword});
+					}
+					else {
+						return done(null, false, {message: "Invalid Password!"});
+					}
 				}
 			})
 		}));

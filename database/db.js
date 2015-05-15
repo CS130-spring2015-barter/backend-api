@@ -63,8 +63,8 @@ module.exports = function(callback) {
 		};
 
 		//get the password for the user
-		db.getPass = function(data, cb) {
-			client.query('SELECT hashed_pass FROM users WHERE email = $1', [data.email], function(err, result)
+		db.getPass = function(email, cb) {
+			client.query('SELECT hashed_pass FROM users WHERE email = $1', [email], function(err, result)
 			{
 					cb(err, result);
 			})};

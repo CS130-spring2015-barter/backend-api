@@ -4,17 +4,11 @@
         "version": "0.1.0",
         "title": "Barter API"
     },
+    "host": "barter.elasticbeanstalk.com",
     "paths": {
         "/item/geo": {
             "get": {
                 "parameters": [
-                    {
-                        "name": "user_id",
-                        "in": "query",
-                        "type": "string",
-                        "required": true,
-                        "description": "User to fetch new items for"
-                    },
                     {
                         "name": "lat",
                         "in": "query",
@@ -30,7 +24,7 @@
                         "format": "double"
                     },
                     {
-                        "name": "n",
+                        "name": "max_items",
                         "description": "Maximum number of items to return",
                         "type": "integer",
                         "required": false,
@@ -51,8 +45,25 @@
                                 "$ref": "#/definitions/Item"
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "user_token": []
+                    }
+                ]
             }
         },
         "/item": {
@@ -73,13 +84,26 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Invalid Input",
                         "schema": {
-                            "title": "item_id",
-                            "type": "string"
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "user_token": []
+                    }
+                ]
             }
         },
         "/item/{item_id}": {
@@ -108,8 +132,25 @@
                 "responses": {
                     "200": {
                         "description": "OK"
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "user_token": []
+                    }
+                ]
             },
             "delete": {
                 "description": "Removes a user's previously posted item",
@@ -120,12 +161,6 @@
                         "description": "ID of item to delete",
                         "required": true,
                         "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "user_id",
-                        "type": "string",
-                        "required": true
                     }
                 ],
                 "tags": [
@@ -134,8 +169,25 @@
                 "responses": {
                     "200": {
                         "description": "OK"
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "user_token": []
+                    }
+                ]
             }
         },
         "/item/liked": {
@@ -157,8 +209,25 @@
                 "responses": {
                     "200": {
                         "description": "OK"
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "user_token": []
+                    }
+                ]
             }
         },
         "/item/seen": {
@@ -180,8 +249,25 @@
                 "responses": {
                     "200": {
                         "description": "OK"
+                    },
+                    "400": {
+                        "description": "Invalid In",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "user_token": []
+                    }
+                ]
             }
         },
         "/user": {
@@ -205,7 +291,16 @@
                         "description": "User registered"
                     },
                     "400": {
-                        "description": "User failed to be registered"
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 }
             }
@@ -232,8 +327,31 @@
                             "title": "last",
                             "type": "string"
                         }
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "No such user",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "user_token": []
+                    }
+                ]
             },
             "put": {
                 "description": "Edits a user's information",
@@ -260,8 +378,25 @@
                 "responses": {
                     "200": {
                         "description": "OK"
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "user_token": []
+                    }
+                ]
             },
             "delete": {
                 "description": "Removes a user",
@@ -280,13 +415,68 @@
                 "responses": {
                     "200": {
                         "description": "OK"
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "user_token": []
+                    }
+                ]
             }
         },
         "/user/login": {
             "post": {
-                "description": "Creates a new user session. Returns user ID if successful, otherwise sends a 403 status. Expects 'email', 'hashed_password', 'lat', and 'long' in post body.",
+                "parameters": [
+                    {
+                        "name": "user_credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UserLogin"
+                        }
+                    }
+                ],
+                "description": "Creates a new user session",
+                "tags": [
+                    "user"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "title": "token",
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication failure",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "user_token": []
+                    }
+                ]
+            }
+        },
+        "/user/logout": {
+            "post": {
+                "description": "Terminates the current user session. Determines user based on Auth token",
                 "tags": [
                     "user"
                 ],
@@ -294,23 +484,18 @@
                     "200": {
                         "description": "OK"
                     },
-                    "403": {
-                        "description": "Login failed."
+                    "401": {
+                        "description": "Invalid session",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
-                }
-            }
-        },
-        "/user/logout": {
-            "post": {
-                "description": "Terminates the current user session",
-                "tags": [
-                    "user"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
+                },
+                "security": [
+                    {
+                        "user_token": []
                     }
-                }
+                ]
             }
         },
         "/chat": {
@@ -336,7 +521,12 @@
                     "200": {
                         "description": "OK"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "user_token": []
+                    }
+                ]
             },
             "post": {
                 "description": "Create new chat session",
@@ -360,7 +550,12 @@
                     "200": {
                         "description": "OK"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "user_token": []
+                    }
+                ]
             }
         },
         "/chat/{sessionId}": {
@@ -382,7 +577,12 @@
                     "200": {
                         "description": "OK"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "user_token": []
+                    }
+                ]
             }
         }
     },
@@ -428,7 +628,7 @@
                 "first",
                 "last",
                 "email",
-                "hashed_password",
+                "password",
                 "lat",
                 "long"
             ],
@@ -442,7 +642,7 @@
                 "email": {
                     "type": "string"
                 },
-                "hashed_password": {
+                "password": {
                     "type": "string"
                 },
                 "lat": {
@@ -500,6 +700,35 @@
                     "minimum": 0
                 }
             }
+        },
+        "UserLogin": {
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "Error": {
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "description": "Details about the error that occurred"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "user_token": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }

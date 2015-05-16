@@ -32,10 +32,10 @@ module.exports = function(dbObject) {
 						return done(null, false, {message: "Invalid email"});
 					}
 
-					userPassword = result.rows[0].hashed_pass;
+					var userBcryptPass = result.rows[0].hashed_pass;
 					// password match
-					if (userPassword == reqPassword) {
-							return done(null, {email: email, password: reqPassword});
+					if (bcrypt.compareSync(reqPassword, userBcryptPass)) {
+							return done(null);
 					}
 					else {
 						return done(null, false, {message: "Invalid Password!"});

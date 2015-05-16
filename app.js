@@ -3,6 +3,7 @@ module.exports = function(dbObject) {
 	var path = require('path');
 	var bcrypt = require('bcrypt');
 	var passport = require('passport');
+	var expjwt = require('express-jwt');
 	var favicon = require('serve-favicon');
 	var logger = require('morgan');
 	var cookieParser = require('cookie-parser');
@@ -23,19 +24,19 @@ module.exports = function(dbObject) {
 		passwordField: 'password'
 	},
   function(email, reqPassword, done) {
-			dbObject.getPass(email, function(err, result) {
+			dbObject.getBasicUserInfo(email, function(err, result) {
 				if (err) {
 					return done(err);
 				}
 				else {
 					if (!result.rows.length) {
-						return done(null, false, {message: "Invalid email"});
+						return done(null, false, {message: "No such email!"});
 					}
 
 					var userBcryptPass = result.rows[0].hashed_pass;
 					// password match
 					if (bcrypt.compareSync(reqPassword, userBcryptPass)) {
-							return done(null,email);
+							return done(null, result.rows[0]);
 					}
 					else {
 						return done(null, false, {message: "Invalid Password!"});
@@ -44,18 +45,19 @@ module.exports = function(dbObject) {
 			})
 		}));
 
-	// setup passport jwt
-	var JwtStrategy = require('passport-jwt').Strategy;
-	var opts = {}
-	opts.secretOrKey = 'testsecretdontusethis';
-	passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
-			if (jwt_payload.email) {
-				return done(null, jwt_payload);
-			}
+	// setup jwt authentication middleware
+	app.use(expjwt({
+	  secret: 'testsecretdontusethis',
+	  credentialsRequired: true,
+	  getToken: function fromHeaderOrQuerystring (req) {
+	    if (req.headers.authorization) {
+	        return req.headers.authorization;
+	    }
 			else {
-				return done(null,false,{message: "Invalid token: No such user"});
+	    	return null;
 			}
-	}));
+	  }
+	}).unless({ path: ['/user', '/user/login'] })); // no token reqd for user creation/login
 
 	// uncomment after placing your favicon in /public
 	//app.use(favicon(__dirname + '/public/favicon.ico'));
@@ -75,6 +77,16 @@ module.exports = function(dbObject) {
 	  var err = new Error('Not Found');
 	  err.status = 404;
 	  next(err);
+	});
+
+	// add error handler for invalid tokens
+	app.use(function(err, req, res, next) {
+		if (err.name === 'UnauthorizedError') {
+    	res.send(401, {message: "Invalid Token"});
+  	}
+		else {
+			next(err);
+		}
 	});
 
 	// error handlers

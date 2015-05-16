@@ -7,9 +7,14 @@ module.exports = function(db) {
 	var router = express.Router();
 
 	//gets user info for a specific :userId
-	router.get('/:userId', expjwt({secret: 'testsecretdontusethis'}),
+	router.get('/:userId',
 		function(req, res, next) {
-			return res.send(req.user.email);
+			if (req.user.user_id) {
+		    return res.send(req.user);
+		  }
+			else {
+				return res.status(401).send({message: ""})
+			}
 		/*
 		var data = {}
 		data.id = req.params.userId;
@@ -19,7 +24,6 @@ module.exports = function(db) {
 		});
 		*/
 	});
-
 
 router.post('/login', function(req, res, next) {
 	  passport.authenticate('local', function(err, email, info) {
@@ -31,12 +35,11 @@ router.post('/login', function(req, res, next) {
 	    }
 
 			// generate token for this user
-			var payload = { email: email };
+			var payload = { user_id: user.id};
 			var token = jwt.encode(payload, 'testsecretdontusethis');
 	    return res.send({token: token});
 	  })(req, res, next);
 	});
-
 
 	//Register a new user.
 	router.post('/', function(req, res, next) {
@@ -51,7 +54,7 @@ router.post('/login', function(req, res, next) {
 		}
 
 		// Make sure user doesnt already exist
-		db.getPass(req.body.email, function(err, result) {
+		db.getBasicUserInfo(req.body.email, function(err, result) {
 			if (result.rows.length != 0) {
 				return res.status(400).send({message: "User already exists!"});
 			}

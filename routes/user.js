@@ -9,20 +9,25 @@ module.exports = function(db) {
 	//gets user info for a specific :userId
 	router.get('/:userId',
 		function(req, res, next) {
-			if (req.user.user_id) {
-		    return res.send(req.user);
-		  }
-			else {
-				return res.status(401).send({message: ""})
-			}
-		/*
-		var data = {}
-		data.id = req.params.userId;
-		db.getUserInfo(data, function(err, userInfo) {
-			if (err) next(err);
-			res.send(userInfo);
-		});
-		*/
+			var user_id = req.params.userId;
+			db.getUserInfo(user_id, function(err, result) {
+				if (err) next(err);
+
+				if (result.rows.length == 0) {
+					return res.status(404).send({message: "No such user!"});
+				}
+
+				// clear null values from result row (user might not have image, about_me, etc)
+				var userInfo = {};
+				var userRow = result.rows[0];
+				for (var i in userRow) {
+					if (userRow[i] != null) {
+						userInfo[i] = userRow[i];
+					}
+				}
+
+				return res.send(userInfo);
+			});
 	});
 
 router.post('/login', function(req, res, next) {
@@ -37,7 +42,7 @@ router.post('/login', function(req, res, next) {
 			// generate token for this user
 			var payload = { user_id: user.id};
 			var token = jwt.encode(payload, 'testsecretdontusethis');
-	    return res.send({token: token});
+	    return res.send({token: token, user_id: user.id});
 	  })(req, res, next);
 	});
 
@@ -68,7 +73,8 @@ router.post('/login', function(req, res, next) {
 				if (err) {
 					return next(err);
 				}
-				res.send(200);
+				var user_id = userRegistered.rows[0].id;
+				res.send(200,{user_id: user_id});
 			});
 		});
 	});

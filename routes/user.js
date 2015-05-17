@@ -22,16 +22,16 @@ module.exports = function(db) {
 
 
 router.post('/login', function(req, res, next) {
-	  passport.authenticate('local', function(err, user, info) {
+	  passport.authenticate('local', function(err, email, info) {
 	    if (err) {
 	      return next(err);
 	    }
-	    if (!user) {
+	    if (!email) {
 	      return res.status(401).send(info);
 	    }
 
 			// generate token for this user
-			var payload = { email: user.email };
+			var payload = { email: email };
 			var token = jwt.encode(payload, 'testsecretdontusethis');
 	    return res.send({token: token});
 	  })(req, res, next);

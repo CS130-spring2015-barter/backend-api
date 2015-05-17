@@ -31,11 +31,11 @@ module.exports = function(db) {
 	});
 
 router.post('/login', function(req, res, next) {
-	  passport.authenticate('local', function(err, email, info) {
+	  passport.authenticate('local', function(err, user, info) {
 	    if (err) {
 	      return next(err);
 	    }
-	    if (!email) {
+	    if (!user) {
 	      return res.status(401).send(info);
 	    }
 

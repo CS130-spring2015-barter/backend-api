@@ -43,14 +43,15 @@ module.exports = function(callback) {
 
 		//insert a new user into the table
 		db.createUser = function(data, cb) {
-			client.query('INSERT INTO users(first_name, last_name, email, hashed_pass, latitude, longitude) VALUES ($1,$2,$3,$4,$5,$6)', [data.first, data.last, data.email, data.password, 0, 0], function(err, result) {
+			client.query('INSERT INTO users(first_name, last_name, email, hashed_pass, latitude, longitude) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id',
+			  [data.first, data.last, data.email, data.password, 0, 0], function(err, result) {
 				cb(err, result);
 			});
 		};
 
 		//get user information
-		db.getUserInfo = function(data, cb) {
-			client.query('SELECT first_name, last_name, email, last_logged_on, date_created, latitude, longitude, about_me, user_image FROM users WHERE id = $1', [data.id], function(err, result) {
+		db.getUserInfo = function(user_id, cb) {
+			client.query('SELECT first_name, last_name, email, last_logged_on, date_created, latitude, longitude, about_me, user_image FROM users WHERE id = $1', [user_id], function(err, result) {
 				cb(err, result);
 			});
 		};
@@ -63,8 +64,8 @@ module.exports = function(callback) {
 		};
 
 		//get the password for the user
-		db.getPass = function(email, cb) {
-			client.query('SELECT hashed_pass FROM users WHERE email = $1', [email], function(err, result)
+		db.getBasicUserInfo = function(email, cb) {
+			client.query('SELECT id, hashed_pass, email FROM users WHERE email = $1', [email], function(err, result)
 			{
 					cb(err, result);
 			})};

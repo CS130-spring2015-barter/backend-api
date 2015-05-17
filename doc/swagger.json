@@ -288,7 +288,10 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "User registered"
+                        "description": "User registered",
+                        "schema": {
+                            "$ref": "#/definitions/LoginSuccess"
+                        }
                     },
                     "400": {
                         "description": "Invalid Input",
@@ -324,8 +327,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "title": "last",
-                            "type": "string"
+                            "$ref": "#/definitions/UserInfo"
                         }
                     },
                     "400": {
@@ -456,8 +458,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "title": "token",
-                            "type": "string"
+                            "$ref": "#/definitions/LoginSuccess"
                         }
                     },
                     "401": {
@@ -625,18 +626,18 @@
         },
         "User": {
             "required": [
-                "first",
-                "last",
+                "first_name",
+                "last_name",
                 "email",
                 "password",
-                "lat",
-                "long"
+                "latitude",
+                "longitude"
             ],
             "properties": {
-                "first": {
+                "first_name": {
                     "type": "string"
                 },
-                "last": {
+                "last_name": {
                     "type": "string"
                 },
                 "email": {
@@ -645,11 +646,11 @@
                 "password": {
                     "type": "string"
                 },
-                "lat": {
+                "latitude": {
                     "type": "number",
                     "format": "double"
                 },
-                "long": {
+                "longitude": {
                     "type": "number",
                     "format": "double"
                 },
@@ -664,11 +665,11 @@
         },
         "UserEdit": {
             "properties": {
-                "first": {
+                "first_name": {
                     "type": "string",
                     "minimum": 0
                 },
-                "last": {
+                "last_name": {
                     "type": "string",
                     "minimum": 0
                 },
@@ -676,16 +677,16 @@
                     "type": "string",
                     "minimum": 0
                 },
-                "hashed_password": {
+                "password": {
                     "type": "string",
                     "minimum": 0
                 },
-                "lat": {
+                "latitude": {
                     "type": "number",
                     "format": "double",
                     "minimum": 0
                 },
-                "long": {
+                "longitude": {
                     "type": "number",
                     "format": "double",
                     "minimum": 0
@@ -698,6 +699,51 @@
                     "type": "string",
                     "format": "byte",
                     "minimum": 0
+                }
+            }
+        },
+        "UserInfo": {
+            "properties": {
+                "first_name": {
+                    "type": "string",
+                    "minimum": 0
+                },
+                "last_name": {
+                    "type": "string",
+                    "minimum": 0
+                },
+                "email": {
+                    "type": "string",
+                    "minimum": 0
+                },
+                "latitude": {
+                    "type": "number",
+                    "format": "double",
+                    "minimum": 0
+                },
+                "longitude": {
+                    "type": "number",
+                    "format": "double",
+                    "minimum": 0
+                },
+                "about_me": {
+                    "type": "string",
+                    "minimum": 0
+                },
+                "image": {
+                    "type": "string",
+                    "format": "byte",
+                    "minimum": 0
+                }
+            }
+        },
+        "LoginSuccess": {
+            "properties": {
+                "token": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
                 }
             }
         },

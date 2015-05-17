@@ -17,7 +17,7 @@ paths:
           required: true
           type: number
           format: double
-        - name: "max_items"
+        - name: max_items
           description: Maximum number of items to return
           type: integer
           required: false
@@ -33,12 +33,12 @@ paths:
             type: array
             items:
               $ref: "#/definitions/Item"
-        "401":
-          description: Authentication Error 
+        "400":
+          description: Invalid Input
           schema:
             $ref: "#/definitions/Error"
-        "400":
-          description: Invalid Input 
+        "401":
+          description: Authentication Error
           schema:
             $ref: "#/definitions/Error"
       security:
@@ -57,12 +57,12 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Authentication Error 
+        "400":
+          description: Invalid Input
           schema:
             $ref: "#/definitions/Error"
-        "400":
-          description: Invalid Input 
+        "401":
+          description: Authentication Error
           schema:
             $ref: "#/definitions/Error"
       security:
@@ -86,12 +86,12 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Authentication Error 
+        "400":
+          description: Invalid Input
           schema:
             $ref: "#/definitions/Error"
-        "400":
-          description: Invalid Input 
+        "401":
+          description: Authentication Error
           schema:
             $ref: "#/definitions/Error"
       security:
@@ -109,12 +109,12 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Authentication Error 
+        "400":
+          description: Invalid Input
           schema:
             $ref: "#/definitions/Error"
-        "400":
-          description: Invalid Input 
+        "401":
+          description: Authentication Error
           schema:
             $ref: "#/definitions/Error"
       security:
@@ -133,12 +133,12 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Authentication Error 
+        "400":
+          description: Invalid Input
           schema:
             $ref: "#/definitions/Error"
-        "400":
-          description: Invalid Input 
+        "401":
+          description: Authentication Error
           schema:
             $ref: "#/definitions/Error"
       security:
@@ -157,12 +157,12 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Authentication Error 
+        "400":
+          description: Invalid In
           schema:
             $ref: "#/definitions/Error"
-        "400":
-          description: Invalid In 
+        "401":
+          description: Authentication Error
           schema:
             $ref: "#/definitions/Error"
       security:
@@ -181,15 +181,16 @@ paths:
       responses:
         "200":
           description: User registered
+          schema:
+            $ref: "#/definitions/LoginSuccess"
         "400":
           description: Invalid Input
           schema:
             $ref: "#/definitions/Error"
         "401":
-          description: Authentication Error 
+          description: Authentication Error
           schema:
             $ref: "#/definitions/Error"
-      
   "/user/{user_id}":
     get:
       description: Gets information for a user
@@ -205,18 +206,17 @@ paths:
         "200":
           description: OK
           schema:
-            title: last
-            type: string
+            $ref: "#/definitions/UserInfo"
+        "400":
+          description: Invalid Input
+          schema:
+            $ref: "#/definitions/Error"
         "401":
-          description: Authentication error 
+          description: Authentication error
           schema:
             $ref: "#/definitions/Error"
         "404":
-          description: No such user 
-          schema:
-            $ref: "#/definitions/Error"
-        "400":
-          description: Invalid Input 
+          description: No such user
           schema:
             $ref: "#/definitions/Error"
       security:
@@ -239,12 +239,12 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Authentication Error
+        "400":
+          description: Invalid Input
           schema:
             $ref: "#/definitions/Error"
-        "400":
-          description: Invalid Input 
+        "401":
+          description: Authentication Error
           schema:
             $ref: "#/definitions/Error"
       security:
@@ -262,12 +262,12 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Authentication Error
+        "400":
+          description: Invalid Input
           schema:
             $ref: "#/definitions/Error"
-        "400":
-          description: Invalid Input 
+        "401":
+          description: Authentication Error
           schema:
             $ref: "#/definitions/Error"
       security:
@@ -279,16 +279,15 @@ paths:
           in: body
           required: true
           schema:
-            $ref: "#/definitions/UserLogin" 
-      description: "Creates a new user session"
+            $ref: "#/definitions/UserLogin"
+      description: Creates a new user session
       tags:
         - user
       responses:
         "200":
           description: OK
           schema:
-            title: token
-            type: string
+            $ref: "#/definitions/LoginSuccess"
         "401":
           description: Authentication failure
           schema:
@@ -304,7 +303,7 @@ paths:
         "200":
           description: OK
         "401":
-          description: Invalid session 
+          description: Invalid session
           schema:
             $ref: "#/definitions/Error"
       security:
@@ -343,7 +342,7 @@ paths:
         "200":
           description: OK
       security:
-        - user_token: []      
+        - user_token: []
   "/chat/{sessionId}":
     delete:
       description: Remove chat session
@@ -387,25 +386,25 @@ definitions:
           type: string
   User:
     required:
-      - first
-      - last
+      - first_name
+      - last_name
       - email
       - password
-      - lat
-      - long
+      - latitude
+      - longitude
     properties:
-      first:
+      first_name:
         type: string
-      last:
+      last_name:
         type: string
       email:
         type: string
       password:
         type: string
-      lat:
+      latitude:
         type: number
         format: double
-      long:
+      longitude:
         type: number
         format: double
       about_me:
@@ -415,23 +414,23 @@ definitions:
         format: byte
   UserEdit:
     properties:
-      first:
+      first_name:
         type: string
         minimum: 0
-      last:
+      last_name:
         type: string
         minimum: 0
       email:
         type: string
         minimum: 0
-      hashed_password:
+      password:
         type: string
         minimum: 0
-      lat:
+      latitude:
         type: number
         format: double
         minimum: 0
-      long:
+      longitude:
         type: number
         format: double
         minimum: 0
@@ -442,8 +441,40 @@ definitions:
         type: string
         format: byte
         minimum: 0
+  UserInfo:
+    properties:
+      first_name:
+        type: string
+        minimum: 0
+      last_name:
+        type: string
+        minimum: 0
+      email:
+        type: string
+        minimum: 0
+      latitude:
+        type: number
+        format: double
+        minimum: 0
+      longitude:
+        type: number
+        format: double
+        minimum: 0
+      about_me:
+        type: string
+        minimum: 0
+      image:
+        type: string
+        format: byte
+        minimum: 0
+  LoginSuccess:
+    properties:
+      token:
+        type: string
+      user_id:
+        type: string
   UserLogin:
-    required: 
+    required:
       - email
       - password
     properties:
@@ -455,11 +486,9 @@ definitions:
     properties:
       message:
         type: string
-        description: Details about the error that occurred 
-
+        description: Details about the error that occurred
 securityDefinitions:
   user_token:
     type: apiKey
-    name: user_token
-    in: header
     name: Authorization
+    in: header

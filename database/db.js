@@ -58,7 +58,8 @@ module.exports = function(callback) {
 
 		//update user info
 		db.updateUser = function(data, cb) {
-			client.query('UPDATE users SET first_name = $1, last_name = $2, about_me = $3, user_image = $4 WHERE id = $5', [data.first, data.last, data.about, data.image, data.uid], function(err, result) {
+			client.query('UPDATE users SET first_name = $1, last_name = $2, about_me = $3, user_image = $4 WHERE id = $5',
+			  [data.first_name, data.last_name, data.about_me, data.user_image, data.id], function(err, result) {
 				cb(err, result);
 			});
 		};

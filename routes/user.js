@@ -30,7 +30,7 @@ module.exports = function(db) {
 			});
 	});
 
-	// User update route 
+	// User update route
 	router.put('/:userId',
 		function(req,res,next) {
 			var user_id = req.params.userId;
@@ -88,7 +88,7 @@ module.exports = function(db) {
 		if (!req.body.email) {
 			return res.status(400).send({message: "Must provide email!"});
 		}
-		if (!req.body.first || !req.body.last) {
+		if (!req.body.first_name || !req.body.last_name) {
 			return res.status(400).send({message: "Must provide first/last name!"});
 		}
 
@@ -98,11 +98,24 @@ module.exports = function(db) {
 				return res.status(400).send({message: "User already exists!"});
 			}
 
-			// Create bcrypted password and save user
+			// Create bcrypted password for user
+			var newUser = req.body;
 			var salt = bcrypt.genSaltSync(10);
-			var passwordHash = bcrypt.hashSync(req.body.password, salt);
-			req.body.password = passwordHash;
+			newUser.hashed_pass = bcrypt.hashSync(req.body.password, salt);
 
+			// Give default values to missing optional fields
+			if (!newUser.latitude || !newUser.longitude) {
+				newUser.latitude = 0;
+				newUser.longitude = 0;
+			}
+			if (!newUser.about_me) {
+				newUser.about_me = null;
+			}
+			if (!newUser.user_image) {
+				newUser.user_image = null;
+			}
+
+			// save the new user
 			db.createUser(req.body, function(err, userRegistered) {
 				if (err) {
 					return next(err);

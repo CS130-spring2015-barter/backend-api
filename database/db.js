@@ -43,8 +43,8 @@ module.exports = function(callback) {
 
 		//insert a new user into the table
 		db.createUser = function(data, cb) {
-			client.query('INSERT INTO users(first_name, last_name, email, hashed_pass, latitude, longitude) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id',
-			  [data.first, data.last, data.email, data.password, 0, 0], function(err, result) {
+			client.query('INSERT INTO users(first_name, last_name, email, hashed_pass, latitude, longitude, about_me, user_image) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING id',
+			  [data.first_name, data.last_name, data.email, data.hashed_pass, data.latitude, data.longitude, data.about_me, data.user_image], function(err, result) {
 				cb(err, result);
 			});
 		};

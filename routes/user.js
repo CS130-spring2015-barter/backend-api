@@ -30,7 +30,41 @@ module.exports = function(db) {
 			});
 	});
 
-router.post('/login', function(req, res, next) {
+	// User update route 
+	router.put('/:userId',
+		function(req,res,next) {
+			var user_id = req.params.userId;
+			var update_info = req.body;
+			db.getUserInfo(user_id, function(err, result) {
+				if (err) next(err);
+
+				if (result.rows.length == 0) {
+					return res.status(404).send({message: "No such user!"});
+				}
+
+				// Update fields for the user based on the request body
+				var user_info = result.rows[0];
+				for (var i in user_info) {
+					// Update field in user if it exists in request body
+					if (update_info[i]) {
+						user_info[i] = update_info[i];
+					}
+				}
+
+				// Save the updated user info back to the database
+				db.updateUser(user_info, function(err, result) {
+					if (err) {
+						return next(err);
+					}
+					else {
+						return res.send(user_info);
+					}
+				})
+			})
+		}
+	);
+
+	router.post('/login', function(req, res, next) {
 	  passport.authenticate('local', function(err, user, info) {
 	    if (err) {
 	      return next(err);

@@ -657,7 +657,7 @@
                 "about_me": {
                     "type": "string"
                 },
-                "image": {
+                "user_image": {
                     "type": "string",
                     "format": "byte"
                 }
@@ -695,7 +695,7 @@
                     "type": "string",
                     "minimum": 0
                 },
-                "image": {
+                "user_image": {
                     "type": "string",
                     "format": "byte",
                     "minimum": 0
@@ -730,7 +730,7 @@
                     "type": "string",
                     "minimum": 0
                 },
-                "image": {
+                "user_image": {
                     "type": "string",
                     "format": "byte",
                     "minimum": 0

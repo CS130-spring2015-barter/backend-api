@@ -409,7 +409,7 @@ definitions:
         format: double
       about_me:
         type: string
-      image:
+      user_image:
         type: string
         format: byte
   UserEdit:
@@ -437,7 +437,7 @@ definitions:
       about_me:
         type: string
         minimum: 0
-      image:
+      user_image:
         type: string
         format: byte
         minimum: 0
@@ -463,7 +463,7 @@ definitions:
       about_me:
         type: string
         minimum: 0
-      image:
+      user_image:
         type: string
         format: byte
         minimum: 0

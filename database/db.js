@@ -1,5 +1,10 @@
 var pg = require('pg');
-var conString = "postgres://barter:swipeyswipe@barterdb.cdqggtkygnqt.us-west-1.rds.amazonaws.com/barter";
+if (process.env.ENVIRONMENT == "PRODUCTION") {
+	var conString = "postgres://barter:swipeyswipe@barterdb.cdqggtkygnqt.us-west-1.rds.amazonaws.com/barter";
+}
+else {
+	var conString = "postgres://barter:swipeyswipe@localhost/barter"
+}
 
 var db = {};
 
@@ -32,47 +37,47 @@ module.exports = function(callback) {
 				'LIMIT 15', //limit to 15 items
 				[data.latitude, data.longitude],
 				function(err, result) {
-					cb(err, result);
+					cb(err, result.rows);
 			});
 		};
 
 		//insert a new user into the table
 		db.createUser = function(data, cb) {
-			client.query('INSERT INTO users(first_name, last_name, email, hashed_pass, latitude, longitude, about_me, user_image) VALUES ($1,$2,$3,$4,$5,$6,$7,$8', [data.first, data.last, data.email, data.hashed_password, data.long, data.lat, data.about, data.image], function(err, result) {
+			client.query('INSERT INTO users(first_name, last_name, email, hashed_pass, latitude, longitude, about_me, user_image) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING id',
+			  [data.first_name, data.last_name, data.email, data.hashed_pass, data.latitude, data.longitude, data.about_me, data.user_image], function(err, result) {
 				cb(err, result);
 			});
 		};
 
 		//get user information
-		db.getUserInfo = function(data, cb) {
-			client.query('SELECT first_name, last_name, email, last_logged_on, date_created, latitude, longitude, about_me, user_image FROM users WHERE id = $1', [data.id], function(err, result) {
+		db.getUserInfo = function(user_id, cb) {
+			client.query('SELECT first_name, last_name, email, last_logged_on, date_created, latitude, longitude, about_me, user_image FROM users WHERE id = $1', [user_id], function(err, result) {
 				cb(err, result);
 			});
 		};
 
 		//update user info
 		db.updateUser = function(data, cb) {
-			client.query('UPDATE users SET first_name = $1, last_name = $2, about_me = $3, user_image = $4 WHERE id = $5', [data.first, data.last, data.about, data.image, data.uid], function(err, result) {
+			client.query('UPDATE users SET first_name = $1, last_name = $2, about_me = $3, user_image = $4 WHERE id = $5',
+			  [data.first_name, data.last_name, data.about_me, data.user_image, data.id], function(err, result) {
 				cb(err, result);
 			});
 		};
 
 		//get the password for the user
-		db.loginUser = function(data, cb) {
-			client.query('SELECT hashed_pass, id FROM users WHERE email = $1', [data.email], function(err, result) 
+		db.getBasicUserInfo = function(email, cb) {
+			client.query('SELECT id, hashed_pass, email FROM users WHERE email = $1', [email], function(err, result)
 			{
-				if (err)  {
 					cb(err, result);
-				}
+			})};
+				/*
 				client.query('UPDATE users SET latitude = $1, longitude = $2 WHERE email = $3', [data.lat, data.long, data.email], function(err, result) {
 					cb(err, result);
-				});
-			});
-		};
+				}); */
 
 		//insert a new item into the table
 		db.createItem = function(data, cb) {
-			client.query('INSERT INTO items(user_id, item_title, item_description, item_image) VALUES ($1,$2,$3,$4)', [data.uid, data.title, data.image, data.description], function(err, result) {
+			client.query('INSERT INTO items(user_id, item_title, item_description, item_image) VALUES ($1,$2,$3,$4)', [data.uid, data.title, data.description, data.image], function(err, result) {
 				cb(err, result);
 			});
 		};
@@ -104,17 +109,6 @@ module.exports = function(callback) {
 				cb(err, result);
 			});
 		};
-	
-		//example query 
-		/*client.query('SELECT $1::int AS number', ['1'], function(err, result) {
-			// call `done()` to release the client back to the pool 
-			done();
-			if(err) {
-				return console.error('error running query', err);
-			}
-			console.log(result.rows[0].number);
-			client.end();
-		});*/
 
 		callback(err, db);
 	});

@@ -1,7 +1,6 @@
 module.exports = function(db) {
 	var express = require('express');
 	var router = express.Router();
-	var uuid = require('node-uuid');
 
 	//get a list of 25 items that the user hasn't seen yet in geographic order
 	router.get('/geo', function(req, res, next) {
@@ -20,19 +19,21 @@ module.exports = function(db) {
 
 	//set an item as liked by a certain user
 	router.post('/liked', function(req, res, next) {
-		var data = {};
-		data.uid = req.body.userId;
-		data.likesRegistered = true;
+		var data = {
+			uid: req.body.userId
+		};
+
+		var likesRegistered = true;
 		for (var x = 0; x < req.body.itemIds; x++) {
 			data.iid = req.body.itemIds[x];
 			db.addItemLiked(data, function(err, itemLikeRegistered) {
 				if (err) next(err);
 				if (!itemLikeRegistered)
-					data.likesRegistered = false;
+					likesRegistered = false;
 			});
 		}
 
-		if (!data.likesRegistered)
+		if (!likesRegistered)
 			res.sendStatus(500);
 		else
 			res.sendStatus(200);

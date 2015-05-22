@@ -80,31 +80,18 @@ module.exports = function(dbObject) {
 	// add error handler for invalid tokens
 	app.use(function(err, req, res, next) {
 		if (err.name === 'UnauthorizedError') {
-    	res.send(401, {message: "Invalid Token"});
+    	res.send(500, {message: "Invalid Token"});
   	}
 		else {
 			next(err);
 		}
 	});
 
-	// error handlers
-
-	// development error handler
-	// will print stacktrace
-	if (app.get('env') === 'development') {
-	  app.use(function(err, req, res, next) {
-		res.status(err.status || 500);
-		res.send(err.message + '\n' + err);
-	  });
-	}
-
-	// production error handler
-	// no stacktraces leaked to user
+	//default error catcher
 	app.use(function(err, req, res, next) {
-	  res.status(err.status || 500);
-	  res.send(err.message);
+		console.log(err.message);
+		res.sendStatus(500);
 	});
-
 
 	return app;
 };

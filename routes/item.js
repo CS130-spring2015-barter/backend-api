@@ -8,6 +8,8 @@ module.exports = function(db) {
 		var data = {}
 		data.num = 15;
 		db.getNItems(data, function(err, items) {
+			if (err) next(err);
+			
 			res.send(items);
 		});
 		/*

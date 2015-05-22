@@ -24,9 +24,6 @@ module.exports = function(db) {
 			uid: req.body.userId
 		};
 
-		console.log(req.body.itemIds);
-		console.log(typeof req.body.itemIds);
-		
 		var itemIds = JSON.parse(req.body.itemIds);
 
 		var dataInputs = [];

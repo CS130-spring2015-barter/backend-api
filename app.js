@@ -57,7 +57,7 @@ module.exports = function(dbObject) {
 	    	return null;
 			}
 	  }
-	}).unless({ path: ['/user', '/user/login', /\/user\/[0-9]+/i] })); // no token reqd for user creation/login
+	}).unless({ path: ['/user', '/user/login', /\/user\/[0-9]+/i] })); // no token read for user creation/login
 
 	// uncomment after placing your favicon in /public
 	//app.use(favicon(__dirname + '/public/favicon.ico'));

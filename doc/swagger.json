@@ -232,18 +232,6 @@
         },
         "/item/seen": {
             "post": {
-                "parameters": [
-                    {
-                        "in": "body",
-                        "required": true,
-                        "name": "item_ids",
-                    },
-                    {
-                        "in": "body",
-                        "required": true,
-                        "name": "user_id",
-                    }
-                ],
                 "description": "Adds items that have been \"seen\" by a user.",
                 "tags": [
                     "item"

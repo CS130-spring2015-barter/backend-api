@@ -23,27 +23,25 @@ module.exports = function(dbObject) {
 		usernameField : 'email',
 		passwordField: 'password'
 	},
-  function(email, reqPassword, done) {
-			dbObject.getBasicUserInfo(email, function(err, result) {
-				if (err) {
-					return done(err);
-				}
-				else {
-					if (!result.rows.length) {
-						return done(null, false, {message: "No such email!"});
-					}
+	function(email, reqPassword, done) {
+		dbObject.getBasicUserInfo(email, function(err, result) {
+			if (err) return done(err);
+				
+			if (!result.rows.length)
+				return done(null, false, {message: "No such email!"});
 
-					var userBcryptPass = result.rows[0].hashed_pass;
-					// password match
-					if (bcrypt.compareSync(reqPassword, userBcryptPass)) {
-							return done(null, result.rows[0]);
-					}
-					else {
-						return done(null, false, {message: "Invalid Password!"});
-					}
-				}
-			})
-		}));
+			var userBcryptPass = result.rows[0].hashed_pass;
+			// password match
+			bcrypt.compare(reqPassword, userBcryptPass, function(err, correct) {
+				if (err) return done(err);
+				
+				if (correct)
+					return done(null, result.rows[0]);
+				else
+					return done(null, false, {message: "Invalid Password!"});
+			});
+		});
+	}));
 
 	// setup jwt authentication middleware
 	app.use(expjwt({

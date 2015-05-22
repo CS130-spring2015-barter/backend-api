@@ -53,20 +53,27 @@ module.exports = function(db) {
 			uid: req.body.userId
 		};
 
-		var likesRegistered = true;
-		for (var x = 0; x < req.body.itemIds; x++) {
-			data.iid = req.body.itemIds[x];
-			db.addItemLiked(data, function(err, itemLikeRegistered) {
-				if (err) next(err);
-				if (!itemLikeRegistered)
-					likesRegistered = false;
+		var itemIds = JSON.parse(req.body.itemIds);
+
+		var dataInputs = [];
+
+		for (var i = 0; i < itemIds.length; i++) {
+			dataInputs.push({
+				uid: req.body.userId,
+				iid: itemIds[i]
 			});
 		}
 
-		if (!likesRegistered)
-			res.sendStatus(500);
-		else
-			res.sendStatus(200);
+		async.map(dataInputs, db.addItemLiked, function(err, result) {
+			var inserted = result.reduce(function(prev, cur) {
+				return prev * cur;
+			});
+
+			if (inserted)
+				res.sendStatus(200);
+			else
+				res.sendStatus(500);
+		});
 	});
 
 	//create a new item

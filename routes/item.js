@@ -83,7 +83,7 @@ module.exports = function(db) {
 		};
 
 		db.createItem(data, function(err, itemCreated) {
-			if (err) console.log(err);
+			if (err) next(err);
 			if (itemCreated)
 				res.sendStatus(200);
 			else

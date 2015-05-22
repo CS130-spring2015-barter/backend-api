@@ -80,7 +80,7 @@ module.exports = function(dbObject) {
 	// add error handler for invalid tokens
 	app.use(function(err, req, res, next) {
 		if (err.name === 'UnauthorizedError') {
-    	res.send(401, {message: "Invalid Token"});
+    	res.send(500, {message: "Invalid Token"});
   	}
 		else {
 			next(err);

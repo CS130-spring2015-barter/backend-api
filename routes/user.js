@@ -33,9 +33,9 @@ module.exports = function(db) {
 	// User update route
 	router.put('/:userId',
 		function(req,res,next) {
-			var user_id = req.params.userId;
-			var update_info = req.body;
-			db.getUserInfo(user_id, function(err, result) {
+			var userId = req.params.userId;
+			var reqInfo= req.body;
+			db.getUserInfo(userId, function(err, result) {
 				if (err) next(err);
 
 				if (result.rows.length == 0) {
@@ -43,21 +43,29 @@ module.exports = function(db) {
 				}
 
 				// Update fields for the user based on the request body
-				var user_info = result.rows[0];
-				for (var i in user_info) {
-					// Update field in user if it exists in request body
-					if (update_info[i]) {
-						user_info[i] = update_info[i];
+				var updatedInfo = result.rows[0];
+				for (var i in updatedInfo) {
+					// Update field in user info only if it exists in request body
+					if (reqInfo[i]) {
+						updatedInfo[i] = reqInfo[i];
 					}
 				}
+				// Handle password update
+				if (reqInfo.password) {
+					var salt = bcrypt.genSaltSync(10);
+					updatedInfo.hashed_pass = bcrypt.hashSync(reqInfo.password, salt);
+				}
+
+				// Add user id to user_info object
+				updatedInfo.id = userId;
 
 				// Save the updated user info back to the database
-				db.updateUser(user_info, function(err, result) {
+				db.updateUser(updatedInfo, function(err, result) {
 					if (err) {
 						return next(err);
 					}
 					else {
-						return res.send(user_info);
+						return res.send(updatedInfo); // this will have hashed_pass in it(remove later)
 					}
 				})
 			})

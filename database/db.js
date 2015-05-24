@@ -51,15 +51,15 @@ module.exports = function(callback) {
 
 		//get user information
 		db.getUserInfo = function(user_id, cb) {
-			client.query('SELECT first_name, last_name, email, last_logged_on, date_created, latitude, longitude, about_me, user_image FROM users WHERE id = $1', [user_id], function(err, result) {
+			client.query('SELECT first_name, last_name, email, hashed_pass, last_logged_on, date_created, latitude, longitude, about_me, user_image FROM users WHERE id = $1', [user_id], function(err, result) {
 				cb(err, result);
 			});
 		};
 
 		//update user info
 		db.updateUser = function(data, cb) {
-			client.query('UPDATE users SET first_name = $1, last_name = $2, about_me = $3, user_image = $4 WHERE id = $5',
-			  [data.first_name, data.last_name, data.about_me, data.user_image, data.id], function(err, result) {
+			client.query('UPDATE users SET first_name = $1, last_name = $2, about_me = $3, user_image = $4, email = $5, hashed_pass = $6 WHERE id = $7',
+			  [data.first_name, data.last_name, data.about_me, data.user_image, data.email, data.hashed_pass, data.id], function(err, result) {
 				cb(err, result);
 			});
 		};

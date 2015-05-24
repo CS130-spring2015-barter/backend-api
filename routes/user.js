@@ -43,24 +43,29 @@ module.exports = function(db) {
 				}
 
 				// Update fields for the user based on the request body
-				var newUserInfo = result.rows[0];
-				for (var i in newUserInfo) {
+				var updatedInfo = result.rows[0];
+				for (var i in updatedInfo) {
 					// Update field in user info only if it exists in request body
 					if (reqInfo[i]) {
-						newUserInfo[i] = reqInfo[i];
+						updatedInfo[i] = reqInfo[i];
 					}
+				}
+				// Handle password update
+				if (reqInfo.password) {
+					var salt = bcrypt.genSaltSync(10);
+					updatedInfo.hashed_pass = bcrypt.hashSync(reqInfo.password, salt);
 				}
 
 				// Add user id to user_info object
-				newUserInfo.id = userId;
-				
+				updatedInfo.id = userId;
+
 				// Save the updated user info back to the database
-				db.updateUser(newUserInfo, function(err, result) {
+				db.updateUser(updatedInfo, function(err, result) {
 					if (err) {
 						return next(err);
 					}
 					else {
-						return res.send(newUserInfo);
+						return res.send(updatedInfo); // this will have hashed_pass in it(remove later)
 					}
 				})
 			})

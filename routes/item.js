@@ -9,7 +9,7 @@ module.exports = function(db) {
 		data.num = 15;
 		db.getNItems(data, function(err, items) {
 			if (err) next(err);
-			
+
 			res.send(items);
 		});
 		/*
@@ -19,20 +19,20 @@ module.exports = function(db) {
 		});
 		*/
 	});
-	
+
 	//set an item as seen by a certain user
 	router.post('/seen', function(req, res, next) {
 		var data = {
-			uid: req.body.userId
+			uid: req.body.user_id
 		};
 
-		var itemIds = JSON.parse(req.body.itemIds);
+		var itemIds = req.body.item_ids;
 
 		var dataInputs = [];
-		
+
 		for (var i = 0; i < itemIds.length; i++) {
 			dataInputs.push({
-				uid: req.body.userId,
+				uid: req.body.user_id,
 				iid: itemIds[i]
 			});
 		}
@@ -41,7 +41,7 @@ module.exports = function(db) {
 			var inserted = result.reduce(function(prev, cur) {
 				return prev * cur;
 			});
-			
+
 			if (inserted)
 				res.sendStatus(200);
 			else
@@ -52,16 +52,15 @@ module.exports = function(db) {
 	//set an item as liked by a certain user
 	router.post('/liked', function(req, res, next) {
 		var data = {
-			uid: req.body.userId
+			uid: req.body.user_id
 		};
 
-		var itemIds = JSON.parse(req.body.itemIds);
-
+		var itemIds = req.body.item_ids;
 		var dataInputs = [];
 
 		for (var i = 0; i < itemIds.length; i++) {
 			dataInputs.push({
-				uid: req.body.userId,
+				uid: req.body.user_id,
 				iid: itemIds[i]
 			});
 		}

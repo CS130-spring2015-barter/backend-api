@@ -1,65 +1,112 @@
-var frisby = require("../node_modules/frisby/lib/frisby");
-var testUid = null;
+var http = require('http');
+var request = require('supertest');
+var should = require('should');
 
-frisby.create('Create a new user')
-  .post('localhost:3000/user', {
-    first_name: "tom",
-    last_name: "brady",
-    email: "golden_boy@nesn.com",
-    password: "godeep123"
-  })
-  .expectStatus(200)
-.toss();
+describe('User routes', function() {
+  var token = null;
+  var user_id = null;
+  var app = null;
+  var testDb = null;
+  var testServer = null;
+  var newUser = { email: "tbrady@nesn.com",
+                              password: "godeep123",
+                              first_name: "Tom",
+                              last_name: "Brady",
+                              about_me: "What balls?"};
 
-frisby.create('Login as user')
-  .post('localhost:3000/login', {
-    email: "golden_boy@nesn.com",
-    password: "godeep123"
+  // Open db connection and initialize supertest with a test server
+  before(function(done) {
+    require('../database/db') (function(err, db) {
+    	if (err) console.log(err);
+      testDb = db;
+      app = require('../app.js')(testDb);
+      testServer = 	http.createServer(app);
+      done();
+    });
   })
-  .expectStatus(200)
-  .expectJSONTypes({
-    token: String
-    user_id: Number
-  })
-  .afterJSON(function (res) {
-    // Set testUid for later requessts
-    testUid = res.user_id;
-    /* include auth token in the header of all future requests */
-    frisby.globalSetup({
-      request: {
-        headers: { 'Authorization': res.token }
+
+  it('allows creation of a new user', function(done) {
+    request(testServer)
+      .post("/user")
+      .send(newUser)
+      .expect(200)
+      .end(function(err,res) {
+        if (err) {
+          return done(err);
+        }
+        res.should.be.json;
+        user_id = res.body.user_id; // db user row id used for later GETs/PUTs
+        done();
+      });
+  });
+
+  it('allows login for an existing user with valid credentials', function(done) {
+    request(testServer)
+      .post("/user/login")
+      .send({email: newUser.email, password: newUser.password})
+      .expect(200)
+      .end(function(err,res) {
+        if (err) {
+          return done(err);
+        }
+        res.should.be.json;
+        user_id = res.body.user_id;
+        token = res.body.token; // API auth token used for later requests
+        done();
+      });
+  });
+
+  it('allows retrieving info for a freshly created user', function(done) {
+    request(testServer)
+      .get("/user/" + user_id)
+      .set("Authorization", token)
+      .expect(200)
+      .end(function(err,res) {
+        if (err) {
+          return done(err);
+        }
+        res.should.be.json;
+        done();
+      });
+  });
+
+  it('allows altering an existing user', function(done) {
+    request(testServer)
+      .put("/user/" + user_id)
+      .set("Authorization", token)
+      .send({about_me: "Where's Bob?"})
+      .expect(200)
+      .end(function(err,res) {
+        if (err) {
+          return done(err);
+        }
+        res.should.be.json;
+        done();
+      });
+  });
+
+  it('persists user info updates to subsequent requests', function(done) {
+    request(testServer)
+      .get("/user/" + user_id)
+      .set("Authorization", token)
+      .expect(200)
+      .end(function(err,res) {
+        if (err) {
+          return done(err);
+        }
+        res.should.be.json;
+        res.body.about_me.should.match("Where's Bob?");
+        done();
+      });
+  });
+
+  // Teardown: delete the created test user
+  after(function(done) {
+    testDb.deleteUser({user_id: user_id}, function(err, result) {
+      if (err) {
+        return done(err);
       }
+      done();
     })
-
-    frisby.create('Make sure info for user exists')
-      .get('localhost:3000/user/' + testUid)
-      .expectStatus(200)
-      .expectJSONTypes({
-        email: String,
-        first_name: String,
-        last_name: String
-      })
-    .toss();
   })
-.toss();
-
-frisby.create('Update user email')
-  .post('localhost:3000/user/userId', {
-    email: "golden_boy1@nesn.com"
-  })
-  .expectStatus(200)
-  .after(function(err, res, body) {
-    frisby.create('Make sure user info is updated')
-      .get('localhost:3000/user/' + testUid)
-      .expectStatus(200)
-      .expectJSONTypes({
-        email: String,
-        first_name: String,
-        last_name: String
-      })
-      .after(function(err, res, body) {
-        expect(res.email).toMatch('golden_boy1@nesn.com')
-      })
-    .toss();
-  })
-.toss();
+});

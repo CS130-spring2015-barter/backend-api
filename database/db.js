@@ -70,10 +70,12 @@ module.exports = function(callback) {
 			{
 					cb(err, result);
 			})};
-				/*
-				client.query('UPDATE users SET latitude = $1, longitude = $2 WHERE email = $3', [data.lat, data.long, data.email], function(err, result) {
-					cb(err, result);
-				}); */
+
+		db.deleteUser = function(data, cb) {
+			client.query('DELETE FROM users WHERE id = $1', [data.user_id], function(err,result) {
+				cb(err,result);
+			});
+		};
 
 		//insert a new item into the table
 		db.createItem = function(data, cb) {

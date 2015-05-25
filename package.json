@@ -17,6 +17,7 @@
     "jade": "~1.9.2",
     "jasmine-node": "latest",
     "jwt-simple": "^0.3.0",
+    "mocha": "^2.2.5",
     "morgan": "~1.5.1",
     "multer": "^0.1.8",
     "node-uuid": "^1.4.3",
@@ -24,6 +25,8 @@
     "passport-jwt": "^1.1.0",
     "passport-local": "^1.0.0",
     "pg": "^4.3.0",
-    "serve-favicon": "~2.2.0"
+    "serve-favicon": "~2.2.0",
+    "should": "^6.0.3",
+    "supertest": "^1.0.1"
   }
 }

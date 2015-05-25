@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "test": "./node_modules/jasmine-node/bin/jasmine-node test/user_route_spec.js"
+    "test": "./node_modules/mocha/bin/mocha"
   },
   "dependencies": {
     "async": "^0.9.0",
@@ -13,9 +13,7 @@
     "debug": "~2.1.1",
     "express": "~4.12.2",
     "express-jwt": "^3.0.0",
-    "frisby": "latest",
     "jade": "~1.9.2",
-    "jasmine-node": "latest",
     "jwt-simple": "^0.3.0",
     "mocha": "^2.2.5",
     "morgan": "~1.5.1",

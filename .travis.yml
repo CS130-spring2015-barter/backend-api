@@ -6,6 +6,7 @@ addons:
 # user is postgres, no password reqd
 before_script:
     - psql -c 'create database travis_ci_test;' -U postgres
+    - psql -f "sql/tableLoad.sql" travis_ci_test -U postgres
 notifications:
     slack: bartr:moNL7Sen4nyyk0W6lWTiQIEv
 install:

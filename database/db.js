@@ -2,8 +2,11 @@ var pg = require('pg');
 if (process.env.ENVIRONMENT == "PRODUCTION") {
 	var conString = "postgres://barter:swipeyswipe@barterdb.cdqggtkygnqt.us-west-1.rds.amazonaws.com/barter";
 }
+else if (process.env.TRAVIS == "true") {
+	var conString = "postgres://postgres@localhost/travis_ci_test"
+}
 else {
-	var conString = "postgres://barter:swipeyswipe@localhost/barter"
+	var conString = "postgres://barter:swipeyswipe@localhost/barter";
 }
 
 var db = {};

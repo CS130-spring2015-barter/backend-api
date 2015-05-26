@@ -89,7 +89,7 @@ module.exports = function(callback) {
 
 		//insert a new item into the table
 		db.createItem = function(data, cb) {
-			client.query('INSERT INTO items(user_id, item_title, item_description, item_image) VALUES ($1,$2,$3,$4)', [data.uid, data.title, data.description, data.image], function(err, result) {
+			client.query('INSERT INTO items(user_id, item_title, item_description, item_image) VALUES ($1,$2,$3,$4) RETURNING id', [data.uid, data.title, data.description, data.image], function(err, result) {
 				cb(err, result);
 			});
 		};
@@ -113,7 +113,7 @@ module.exports = function(callback) {
 		db.addItemSeen = function(data, cb) {
 			client.query('INSERT INTO seenItems(user_id, item_id) SELECT $1, $2 WHERE NOT EXISTS( \
 			SELECT * FROM seenItems WHERE user_id = $1 AND item_id = $2)', [data.uid, data.iid], function(err, result)  {
-				cb(err, result.rowCount);
+				cb(err, result);
 			});
 		};
 

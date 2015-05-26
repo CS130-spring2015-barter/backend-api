@@ -96,6 +96,21 @@ module.exports = function(db) {
 		});
 	});
 
+	// retrieve info for an item by id
+	router.get('/:itemId', function(req, res, next) {
+		db.getItemInfo({itemId: req.params.itemId}, function(err, result) {
+			if (err)
+				return res.sendStatus(500);
+			if (result.rows.length == 0) {
+				return res.sendStatus(404);
+			}
+			itemInfo = result.rows[0];
+			itemInfo.item_id = result.rows[0].id;
+			delete itemInfo.id;
+			return res.send(itemInfo);
+		});
+	});
+
 	//updates an existing item
 	router.put('/:itemId', function(req, res, next) {
 		req.body.id = req.params.itemId;

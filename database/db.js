@@ -29,6 +29,13 @@ module.exports = function(callback) {
 			});
 		};
 
+		// get info for an item
+		db.getItemInfo = function(data, cb) {
+			client.query('SELECT * FROM items WHERE id = $1', [data.itemId], function(err,result) {
+					cb(err,result);
+			});
+		};
+
 		//Returns 15 items closest to the user that he hasn't seen yet
 		db.getLocalItems = function(data, cb) {
 			client.query('SELECT items.id AS id, items.user_id AS userId, item_description, item_title, item_image ' +

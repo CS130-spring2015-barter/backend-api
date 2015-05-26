@@ -107,6 +107,52 @@
             }
         },
         "/item/{item_id}": {
+            "get": {
+                "description": "Retrieves info for an item by id",
+                "tags": [
+                    "item"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "item_id",
+                        "description": "ID of item to retrieve info",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Item"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Item doesn't exist",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "user_token": []
+                    }
+                ]
+            },
             "put": {
                 "description": "Updates an existing item posting",
                 "parameters": [
@@ -191,6 +237,55 @@
             }
         },
         "/item/liked": {
+            "get": {
+                "description": "Retrieves up to n item ids that have been liked by a user. n defaults to 20.",
+                "tags": [
+                    "item"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "required": true,
+                        "name": "user_id",
+                        "type": "number",
+                        "format": "integer",
+                        "description": "id of user to retrieve liked items for"
+                    },
+                    {
+                        "in": "query",
+                        "required": false,
+                        "name": "n",
+                        "description": "max liked item ids to return",
+                        "type": "number",
+                        "format": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ItemIds"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "user_token": []
+                    }
+                ]
+            },
             "post": {
                 "parameters": [
                     {
@@ -579,13 +674,18 @@
     },
     "definitions": {
         "Item": {
+            "type": "object",
             "required": [
                 "user_id",
+                "item_id",
                 "item_title",
                 "item_description",
                 "item_picture"
             ],
             "properties": {
+                "item_id": {
+                    "type": "string"
+                },
                 "user_id": {
                     "type": "string"
                 },
@@ -748,6 +848,20 @@
                 },
                 "password": {
                     "type": "string"
+                }
+            }
+        },
+        "ItemIds": {
+            "required": [
+                "item_ids"
+            ],
+            "type": "object",
+            "properties": {
+                "item_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },

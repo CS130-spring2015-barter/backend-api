@@ -94,6 +94,13 @@ module.exports = function(callback) {
 			});
 		};
 
+		// retrieve item ids that have been liked by a user
+		db.getLikedItems = function(data, cb) {
+			client.query('SELECT item_id FROM likedItems WHERE user_id = $1 LIMIT $2', [data.userId, data.maxItems], function(err,result) {
+				cb(err,result);
+			});
+		};
+		
 		//add an item that has been liked
 		db.addItemLiked = function(data, cb) {
 			client.query('INSERT INTO likedItems(user_id, item_id) VALUES ($1,$2)', [data.uid, data.iid], function(err, result) {

@@ -50,6 +50,33 @@ module.exports = function(db) {
 	});
 
 	//set an item as liked by a certain user
+	router.get('/liked', function(req, res, next) {
+		var userId = req.query.user_id
+		if (!userId) {
+			return res.status(500).send({message: "No user_id supplied!"});
+		}
+		var maxItems = req.query.n;
+		// default max item ids to return to 20
+		if (!maxItems) {
+			maxItems = 20;
+		}
+
+		var data = {userId: userId, maxItems: maxItems};
+		// Retrive item ids from db
+		db.getLikedItems(data, function(err, result) {
+			if (err)
+				return res.status(500).send({message: "DB lookup error!"});
+
+			var likedItems = {};
+			likedItems.item_ids = [];
+			for (var i = 0; i < result.rows.length; i++) {
+				likedItems.item_ids.push(result.rows[i].item_id);
+			}
+			return res.send(likedItems);
+		});
+	});
+
+	//set an item as liked by a certain user
 	router.post('/liked', function(req, res, next) {
 		var data = {
 			uid: req.body.user_id

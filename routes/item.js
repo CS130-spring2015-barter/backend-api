@@ -117,7 +117,7 @@ module.exports = function(db) {
 		db.createItem(data, function(err, itemCreated) {
 			if (err) next(err);
 			if (itemCreated)
-				res.sendStatus(200);
+				res.send({item_id: itemCreated.rows[0].id});
 			else
 				res.sendStatus(500);
 		});

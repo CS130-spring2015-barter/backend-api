@@ -57,6 +57,12 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            type: object
+            title: CreatedItem
+            properties:
+              item_id:
+                type: integer
         "400":
           description: Invalid Input
           schema:
@@ -78,8 +84,6 @@ paths:
           description: ID of item to retrieve info
           required: true
           type: integer
-      tags:
-        - item
       responses:
         "200":
           description: OK
@@ -94,7 +98,7 @@ paths:
           schema:
             $ref: "#/definitions/Error"
         "404":
-          description: Item doesn't exist
+          description: "Item doesn't exist"
           schema:
             $ref: "#/definitions/Error"
       security:
@@ -152,7 +156,7 @@ paths:
         - user_token: []
   /item/liked:
     get:
-      description: Retrieves up to n item ids that have been liked by a user. n defaults to 20. 
+      description: Retrieves up to n item ids that have been liked by a user. n defaults to 20.
       tags:
         - item
       parameters:
@@ -164,7 +168,7 @@ paths:
           description: id of user to retrieve liked items for
         - in: query
           required: false
-          name: n 
+          name: "n"
           description: max liked item ids to return
           type: number
           format: integer

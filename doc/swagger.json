@@ -84,7 +84,16 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "title": "CreatedItem",
+                            "properties": {
+                                "item_id": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
                     },
                     "400": {
                         "description": "Invalid Input",

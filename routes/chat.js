@@ -11,13 +11,13 @@ module.exports = function(db) {
    var privateKey = process.env.LAYER_PRIVATE_KEY;
 
    if(!process.env.LAYER_PROVIDER_ID){
-      res.send("Couldn't find LAYER_PROVIDER_ID");
+      return res.status(500).send("Couldn't find LAYER_PROVIDER_ID");
     }
    if(!process.env.LAYER_KEY_ID) {
-      res.send("Couldn't find LAYER_KEY_ID");
+      return res.status(500).send("Couldn't find LAYER_KEY_ID");
    }
    if(!privateKey) {
-      res.send("Couldn't find Layer Private Key");
+      return res.status(500).send("Couldn't find Layer Private Key");
    }
 
   var header =  JSON.stringify({

@@ -151,10 +151,46 @@ module.exports = function(callback) {
 
 		//update item info
 		db.updateItem = function(data, cb) {
-			client.query('UPDATE items SET item_description = $1, item_title = $2, item_image = $3 WHERE id = $4',
-			[data.item_description, data.item_title, data.item_image, data.id], function(err, result) {
-				cb(err, result);
-			});
+			//if we received no data to update then don't do anything
+			if (!data.item_description && !data.item_title && !data.item_image)
+				cb(null, true);
+			
+			var query = 'UPDATE items SET';
+			var firstClause = true;
+
+			if (data.item_description) {
+				if (firstClause) {
+					query += ' item_description = $1';
+					firstClause = false;
+				} else
+					query += ', item_description = $1';
+			}
+
+			if (data.item_title) {
+				if (firstClause) {
+					query += ' item_title = $2';
+					firstClause = false;
+				} else
+					query += ', item_title = $2';
+			}
+
+			if (data.item_image) {
+				if (firstClause) {
+					query += ' item_image = $3';
+					firstClause = false;
+				} else
+					query += ', item_image = $3';
+			}
+
+			query += ' WHERE id = $4';
+
+			client.query(
+				query,
+				[data.item_description, data.item_title, data.item_image, data.id],
+				function(err, result) {
+					cb(err, result);
+				}
+			);
 		};
 
 		callback(err, db);

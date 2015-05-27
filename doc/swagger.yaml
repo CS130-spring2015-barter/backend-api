@@ -435,57 +435,48 @@ paths:
             $ref: "#/definitions/Error"
       security:
         - user_token: []
-  /chat:
-    get:
-      description: Retrieves id for chat session between two users
-      tags:
-        - chat
-      parameters:
-        - in: body
-          name: chat_users
-          schema:
-            type: array
-            items:
-              title: user_id
-              type: string
-      responses:
-        "200":
-          description: OK
-      security:
-        - user_token: []
+  /chat/authenticate:
     post:
-      description: Create new chat session
+      description: Generates a Layer jwt token for the user
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
       parameters:
         - in: body
-          name: chat_users
-          schema:
-            type: array
-            items:
-              title: user_id
-              type: string
-      tags:
-        - chat
-      responses:
-        "200":
-          description: OK
-      security:
-        - user_token: []
-  "/chat/{sessionId}":
-    delete:
-      description: Remove chat session
-      parameters:
-        - in: path
-          name: sessionId
-          description: ID of session to delete
           required: true
-          type: string
+          name: LayerAuthReq
+          schema:
+            $ref: "#/definitions/LayerAuthReq"
       tags:
         - chat
       responses:
         "200":
           description: OK
+          schema:
+            type: object
+            title: AuthResponse
+            required:
+              - layer_token
+            properties:
+              layer_token:
+                type: string
+        "400":
+          description: Invalid Input
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Authentication error
+          schema:
+            $ref: "#/definitions/Error"
+        "404":
+          description: No such user
+          schema:
+            $ref: "#/definitions/Error"
       security:
         - user_token: []
+      
 definitions:
   Item:
     type: object
@@ -622,6 +613,17 @@ definitions:
         type: array
         items:
           type: integer
+  LayerAuthReq:
+    type: object
+    required:
+      - user_id
+      - nonce
+    title: LayerAuthReq
+    properties:
+      user_id:
+        type: integer
+      nonce:
+        type: integer
   Error:
     properties:
       message:

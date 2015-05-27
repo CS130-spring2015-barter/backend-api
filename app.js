@@ -12,6 +12,7 @@ module.exports = function(dbObject) {
 	var LocalStrategy   = require('passport-local').Strategy;
 	var user = require('./routes/user')(dbObject);
 	var item = require('./routes/item')(dbObject);
+	var chat = require('./routes/chat')(dbObject);
 	var app = express();
 
 	// view engine setup
@@ -26,7 +27,7 @@ module.exports = function(dbObject) {
 	function(email, reqPassword, done) {
 		dbObject.getBasicUserInfo(email, function(err, result) {
 			if (err) return done(err);
-				
+
 			if (!result.rows.length)
 				return done(null, false, {message: "No such email!"});
 
@@ -34,7 +35,7 @@ module.exports = function(dbObject) {
 			// password match
 			bcrypt.compare(reqPassword, userBcryptPass, function(err, correct) {
 				if (err) return done(err);
-				
+
 				if (correct)
 					return done(null, result.rows[0]);
 				else
@@ -69,6 +70,7 @@ module.exports = function(dbObject) {
 
 	app.use('/user', user);
 	app.use('/item', item);
+	app.use('/chat', chat);
 
 	// catch 404 and forward to error handler
 	app.use(function(req, res, next) {

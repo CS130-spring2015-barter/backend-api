@@ -34,7 +34,7 @@ module.exports = function(db) {
 	router.put('/:userId',
 		function(req,res,next) {
 			var userId = req.params.userId;
-			var reqInfo= req.body;
+			var reqInfo = req.body;
 			db.getUserInfo(userId, function(err, result) {
 				if (err) next(err);
 

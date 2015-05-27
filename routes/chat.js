@@ -40,7 +40,7 @@ module.exports = function(db) {
 
   var jws = r.jws.JWS.sign('RS256', header, claim, privateKey.toString());
 
-  res.json({'identity_token': jws})
+  res.json({'layer_token': jws})
   });
 
   return router;

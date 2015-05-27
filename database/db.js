@@ -128,10 +128,10 @@ module.exports = function(callback) {
 		};
 
 		db.getUserItems = function(data, cb) {
-			client.query('SELECT items.id as item_id FROM items,user WHERE items.user_id = $1 LIMIT $2' ,[data.user_id, data.max_items] , function(err,result) {
+			client.query('SELECT items.id as item_id FROM items WHERE items.user_id = $1', [data.user_id], function(err,result) {
 				cb(err,result);
-			})
-		}
+			});
+		};
 
 		//insert a new item into the table
 		db.createItem = function(data, cb) {
@@ -142,7 +142,7 @@ module.exports = function(callback) {
 
 		// retrieve item ids that have been liked by a user
 		db.getLikedItems = function(data, cb) {
-			client.query('SELECT item_id FROM likedItems WHERE user_id = $1 LIMIT $2', [data.userId, data.maxItems], function(err,result) {
+			client.query('SELECT item_id FROM likedItems WHERE user_id = $1', [data.userId], function(err,result) {
 				cb(err,result);
 			});
 		};

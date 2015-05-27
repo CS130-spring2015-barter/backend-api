@@ -36,6 +36,25 @@ module.exports = function(callback) {
 			});
 		};
 
+		// get info for collection of item ids
+		db.getItemsInfo = function(data, cb) {
+			// generate query string for selecting on multiple ids
+			var queryStr = 'SELECT * FROM items WHERE id in (';
+			for (var i = 0; i < data.ids.length; i++) {
+				if (i == 0) {
+					queryStr += data.ids[i];
+				}
+				else {
+					queryStr += "," + data.ids[i];
+				}
+			}
+			queryStr += ')';
+			// perform query
+			client.query(queryStr, function(err,result) {
+				cb(err,result);
+			});
+		};
+
 		//Returns 15 items closest to the user that he hasn't seen yet
 		db.getLocalItems = function(data, cb) {
 			client.query('SELECT items.id AS item_id, items.user_id AS userId, item_description, item_title, item_image ' +

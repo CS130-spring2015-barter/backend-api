@@ -149,6 +149,31 @@ module.exports = function(db) {
 		});
 	});
 
+	// retrieve multiple items(ids query param MUST be provided)
+	// ids are expected to be delivered in CSV format: ids=1,2,3
+	// TODO: verify that all item_ids the user requests actually exist
+	router.get('/', function(req, res, next) {
+		if (!req.query.ids) {
+			return res.status(500).send({message: "item_ids must be provided!"});
+		}
+		var ids = req.query.ids.split(",");
+
+		// retrieve items from db
+		db.getItemsInfo({ids: ids}, function(err, result) {
+			if (err) {
+				return next(err);
+			}
+			var infos = result.rows;
+
+			// rename id to item_id for output
+			for (var i = 0; i < infos.length; i++) {
+				infos[i].item_id = infos[i].id;
+				delete infos[i].id;
+			}
+			return res.send(infos);
+		});
+	});
+
 	//updates an existing item
 	router.put('/:itemId', function(req, res, next) {
 		req.body.id = req.params.itemId;

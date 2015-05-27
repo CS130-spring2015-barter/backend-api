@@ -118,7 +118,7 @@ module.exports = function(db) {
 		};
 
 		db.createItem(data, function(err, itemCreated) {
-			if (err) next(err);
+			if (err) return next(err);
 			if (itemCreated)
 				res.send({item_id: itemCreated.rows[0].id});
 			else
@@ -145,7 +145,7 @@ module.exports = function(db) {
 	router.put('/:itemId', function(req, res, next) {
 		req.body.id = req.params.itemId;
 		db.updateItem(req.body, function(err, itemUpdated) {
-			if (err) next(err);
+			if (err) return next(err);
 			if (itemUpdated)
 				res.sendStatus(200);
 			else
@@ -159,7 +159,7 @@ module.exports = function(db) {
 		data.id = req.params.itemId;
 
 		db.deleteItem(data, function(err, itemDeleted) {
-			if (err) next(err);
+			if (err) return next(err);
 			if (itemDeleted)
 				res.sendStatus(200);
 			else

@@ -169,7 +169,6 @@ module.exports = function(db) {
 			for (var i = 0; i < infos.length; i++) {
 				infos[i].item_id = infos[i].id;
 				delete infos[i].id;
-				delete infos[i].item_image;
 			}
 			return res.send(infos);
 		});

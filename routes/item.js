@@ -15,8 +15,8 @@ module.exports = function(db) {
 		db.getNItems(data, function(err, items) {
 			if (err) return next(err);
 			for (var i = 0; i < items.length; i++) {
-				items[i].item_id = items[i].id;
-				delete items[i].id;
+				items[i].item_id = items[i].item_id;
+				delete items[i].item_id;
 			}
 			res.send(items);
 		});

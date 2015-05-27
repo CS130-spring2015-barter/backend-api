@@ -38,7 +38,7 @@ module.exports = function(callback) {
 
 		//Returns 15 items closest to the user that he hasn't seen yet
 		db.getLocalItems = function(data, cb) {
-			client.query('SELECT items.id AS id, items.user_id AS userId, item_description, item_title, item_image ' +
+			client.query('SELECT items.id AS item_id, items.user_id AS userId, item_description, item_title, item_image ' +
 				'FROM items, users, seenitems ' +
 				'WHERE users.id = items.user_id AND ' + //join items to their users
 					'seenitems.user_id = users.id AND ' + //join seenitems to the user

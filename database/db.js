@@ -36,9 +36,28 @@ module.exports = function(callback) {
 			});
 		};
 
+		// get info for collection of item ids
+		db.getItemsInfo = function(data, cb) {
+			// generate query string for selecting on multiple ids
+			var queryStr = 'SELECT * FROM items WHERE id in (';
+			for (var i = 0; i < data.ids.length; i++) {
+				if (i == 0) {
+					queryStr += data.ids[i];
+				}
+				else {
+					queryStr += "," + data.ids[i];
+				}
+			}
+			queryStr += ')';
+			// perform query
+			client.query(queryStr, function(err,result) {
+				cb(err,result);
+			});
+		};
+
 		//Returns 15 items closest to the user that he hasn't seen yet
 		db.getLocalItems = function(data, cb) {
-			client.query('SELECT items.id AS id, items.user_id AS userId, item_description, item_title, item_image ' +
+			client.query('SELECT items.id AS item_id, items.user_id AS userId, item_description, item_title, item_image ' +
 				'FROM items, users, seenitems ' +
 				'WHERE users.id = items.user_id AND ' + //join items to their users
 					'seenitems.user_id = users.id AND ' + //join seenitems to the user
@@ -87,6 +106,12 @@ module.exports = function(callback) {
 			});
 		};
 
+		db.getUserItems = function(data, cb) {
+			client.query('SELECT items.id as item_id FROM items,user WHERE items.user_id = $1 LIMIT $2' ,[data.user_id, data.max_items] , function(err,result) {
+				cb(err,result);
+			})
+		}
+
 		//insert a new item into the table
 		db.createItem = function(data, cb) {
 			client.query('INSERT INTO items(user_id, item_title, item_description, item_image) VALUES ($1,$2,$3,$4) RETURNING id', [data.uid, data.title, data.description, data.image], function(err, result) {
@@ -126,7 +151,8 @@ module.exports = function(callback) {
 
 		//update item info
 		db.updateItem = function(data, cb) {
-			client.query('UPDATE items SET item_description = $1, item_title = $2, item_image = $3 WHERE id = $4', [data.description, data.title, data.image, data.iid], function(err, result) {
+			client.query('UPDATE items SET item_description = $1, item_title = $2, item_image = $3 WHERE id = $4',
+			[data.item_description, data.item_title, data.item_image, data.id], function(err, result) {
 				cb(err, result);
 			});
 		};

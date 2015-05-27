@@ -8,6 +8,9 @@
     "paths": {
         "/item/geo": {
             "get": {
+                "produces": [
+                    "application/json"
+                ],
                 "parameters": [
                     {
                         "name": "lat",
@@ -67,7 +70,69 @@
             }
         },
         "/item": {
+            "get": {
+                "description": "Returns item(s) by id",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "ids",
+                        "required": true,
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "collectionFormat": "csv"
+                    }
+                ],
+                "tags": [
+                    "item"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "title": "ItemInfos",
+                            "items": {
+                                "$ref": "#/definitions/Item"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "One of the requested items doesn't exist",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "user_token": []
+                    }
+                ]
+            },
             "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "parameters": [
                     {
                         "in": "body",
@@ -117,6 +182,9 @@
         },
         "/item/{item_id}": {
             "get": {
+                "produces": [
+                    "application/json"
+                ],
                 "description": "Retrieves info for an item by id",
                 "tags": [
                     "item"
@@ -163,6 +231,12 @@
                 ]
             },
             "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "description": "Updates an existing item posting",
                 "parameters": [
                     {
@@ -247,6 +321,9 @@
         },
         "/item/liked": {
             "get": {
+                "produces": [
+                    "application/json"
+                ],
                 "description": "Retrieves up to n item ids that have been liked by a user. n defaults to 20.",
                 "tags": [
                     "item"
@@ -296,6 +373,12 @@
                 ]
             },
             "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "parameters": [
                     {
                         "in": "body",
@@ -336,6 +419,12 @@
         },
         "/item/seen": {
             "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "description": "Adds items that have been \"seen\" by a user.",
                 "tags": [
                     "item"
@@ -366,6 +455,12 @@
         },
         "/user": {
             "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "parameters": [
                     {
                         "name": "user",
@@ -404,6 +499,9 @@
         },
         "/user/{user_id}": {
             "get": {
+                "produces": [
+                    "application/json"
+                ],
                 "description": "Gets information for a user",
                 "tags": [
                     "user"
@@ -450,6 +548,12 @@
                 ]
             },
             "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "description": "Edits a user's information",
                 "parameters": [
                     {
@@ -532,8 +636,60 @@
                 ]
             }
         },
+        "/user/{user_id}/item": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "description": "Retrieves items for a user",
+                "tags": [
+                    "user"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "user_id",
+                        "description": "ID of user to fetch items for",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/ItemIds"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "No such user",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/user/login": {
             "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "parameters": [
                     {
                         "name": "user_credentials",
@@ -593,48 +749,23 @@
                 ]
             }
         },
-        "/chat": {
-            "get": {
-                "description": "Retrieves id for chat session between two users",
-                "tags": [
-                    "chat"
-                ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "chat_users",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "title": "user_id",
-                                "type": "string"
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                },
-                "security": [
-                    {
-                        "user_token": []
-                    }
-                ]
-            },
+        "/chat/authenticate": {
             "post": {
-                "description": "Create new chat session",
+                "description": "Generates a Layer jwt token for the user",
+                "consumes": [
+                    "application/json",
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "parameters": [
                     {
                         "in": "body",
-                        "name": "chat_users",
+                        "required": true,
+                        "name": "LayerAuthReq",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "title": "user_id",
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/LayerAuthReq"
                         }
                     }
                 ],
@@ -643,34 +774,37 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
-                    }
-                },
-                "security": [
-                    {
-                        "user_token": []
-                    }
-                ]
-            }
-        },
-        "/chat/{sessionId}": {
-            "delete": {
-                "description": "Remove chat session",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "sessionId",
-                        "description": "ID of session to delete",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "tags": [
-                    "chat"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "title": "AuthResponse",
+                            "required": [
+                                "layer_token"
+                            ],
+                            "properties": {
+                                "layer_token": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "No such user",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
                     }
                 },
                 "security": [
@@ -689,7 +823,7 @@
                 "item_id",
                 "item_title",
                 "item_description",
-                "item_picture"
+                "item_image"
             ],
             "properties": {
                 "item_id": {
@@ -704,7 +838,7 @@
                 "item_description": {
                     "type": "string"
                 },
-                "item_picture": {
+                "item_image": {
                     "type": "string",
                     "format": "byte"
                 }
@@ -871,6 +1005,22 @@
                     "items": {
                         "type": "integer"
                     }
+                }
+            }
+        },
+        "LayerAuthReq": {
+            "type": "object",
+            "required": [
+                "user_id",
+                "nonce"
+            ],
+            "title": "LayerAuthReq",
+            "properties": {
+                "user_id": {
+                    "type": "integer"
+                },
+                "nonce": {
+                    "type": "integer"
                 }
             }
         },

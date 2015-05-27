@@ -6,10 +6,18 @@ module.exports = function(db) {
 	//get a list of 25 items that the user hasn't seen yet in geographic order
 	router.get('/geo', function(req, res, next) {
 		var data = {}
-		data.num = 15;
+		if (req.query.max_items) {
+			data.num = req.query.max_items;
+		}
+		else {
+			data.num = 15;
+		}
 		db.getNItems(data, function(err, items) {
-			if (err) next(err);
-
+			if (err) return next(err);
+			for (var i = 0; i < items.length; i++) {
+				items[i].item_id = items[i].item_id;
+				delete items[i].item_id;
+			}
 			res.send(items);
 		});
 		/*
@@ -106,16 +114,19 @@ module.exports = function(db) {
 
 	//create a new item
 	router.post('/', function(req, res, next) {
+		if (req.get('Content-Type') != 'application/json') {
+			return res.status(500).send({message: "Only acceptable Content-type is application/json!"});
+		}
 
 		var data = {
 			uid: req.body.user_id,
 			title: req.body.item_title,
-			image: req.files.item_picture.buffer,
+			image: req.body.item_image,
 			description: req.body.item_description
 		};
 
 		db.createItem(data, function(err, itemCreated) {
-			if (err) next(err);
+			if (err) return next(err);
 			if (itemCreated)
 				res.send({item_id: itemCreated.rows[0].id});
 			else
@@ -138,11 +149,36 @@ module.exports = function(db) {
 		});
 	});
 
+	// retrieve multiple items(ids query param MUST be provided)
+	// ids are expected to be delivered in CSV format: ids=1,2,3
+	// TODO: verify that all item_ids the user requests actually exist
+	router.get('/', function(req, res, next) {
+		if (!req.query.ids) {
+			return res.status(500).send({message: "item_ids must be provided!"});
+		}
+		var ids = req.query.ids.split(",");
+
+		// retrieve items from db
+		db.getItemsInfo({ids: ids}, function(err, result) {
+			if (err) {
+				return next(err);
+			}
+			var infos = result.rows;
+
+			// rename id to item_id for output
+			for (var i = 0; i < infos.length; i++) {
+				infos[i].item_id = infos[i].id;
+				delete infos[i].id;
+			}
+			return res.send(infos);
+		});
+	});
+
 	//updates an existing item
 	router.put('/:itemId', function(req, res, next) {
 		req.body.id = req.params.itemId;
 		db.updateItem(req.body, function(err, itemUpdated) {
-			if (err) next(err);
+			if (err) return next(err);
 			if (itemUpdated)
 				res.sendStatus(200);
 			else
@@ -156,7 +192,7 @@ module.exports = function(db) {
 		data.id = req.params.itemId;
 
 		db.deleteItem(data, function(err, itemDeleted) {
-			if (err) next(err);
+			if (err) return next(err);
 			if (itemDeleted)
 				res.sendStatus(200);
 			else

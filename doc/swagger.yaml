@@ -6,6 +6,8 @@ host: barter.elasticbeanstalk.com
 paths:
   /item/geo:
     get:
+      produces:
+        - application/json
       parameters:
         - name: lat
           in: query
@@ -44,7 +46,47 @@ paths:
       security:
         - user_token: []
   /item:
+    get:
+      description: Returns item(s) by id
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: ids
+          required: true
+          type: array
+          items:
+            type: integer
+          collectionFormat: csv
+      tags:
+        - item
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: array
+            title: ItemInfos
+            items: 
+              $ref: "#/definitions/Item"
+        "400":
+          description: Invalid Input
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Authentication Error
+          schema:
+            $ref: "#/definitions/Error"
+        "404":
+          description: One of the requested items doesn't exist
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+        - user_token: []
     post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
       parameters:
         - in: body
           name: item_info
@@ -75,6 +117,8 @@ paths:
         - user_token: []
   "/item/{item_id}":
     get:
+      produces:
+        - application/json
       description: Retrieves info for an item by id
       tags:
         - item
@@ -104,6 +148,10 @@ paths:
       security:
         - user_token: []
     put:
+      consumes:
+        - application/json
+      produces:
+        - application/json
       description: Updates an existing item posting
       parameters:
         - in: path
@@ -156,6 +204,8 @@ paths:
         - user_token: []
   /item/liked:
     get:
+      produces:
+        - application/json
       description: Retrieves up to n item ids that have been liked by a user. n defaults to 20.
       tags:
         - item
@@ -188,6 +238,10 @@ paths:
       security:
         - user_token: []
     post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
       parameters:
         - in: body
           required: true
@@ -212,6 +266,10 @@ paths:
         - user_token: []
   /item/seen:
     post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
       description: "Adds items that have been \"seen\" by a user."
       tags:
         - item
@@ -230,6 +288,10 @@ paths:
         - user_token: []
   /user:
     post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
       parameters:
         - name: user
           in: body
@@ -254,6 +316,8 @@ paths:
             $ref: "#/definitions/Error"
   "/user/{user_id}":
     get:
+      produces:
+        - application/json
       description: Gets information for a user
       tags:
         - user
@@ -283,6 +347,10 @@ paths:
       security:
         - user_token: []
     put:
+      consumes:
+        - application/json
+      produces:
+        - application/json
       description: "Edits a user's information"
       parameters:
         - in: path
@@ -333,8 +401,42 @@ paths:
             $ref: "#/definitions/Error"
       security:
         - user_token: []
+  "/user/{user_id}/item":
+    get:
+      produces:
+        - application/json
+      description: Retrieves items for a user
+      tags:
+        - user
+      parameters:
+        - in: path
+          name: user_id
+          description: ID of user to fetch items for
+          required: true
+          type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/ItemIds"
+        "400":
+          description: Invalid Input
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Authentication error
+          schema:
+            $ref: "#/definitions/Error"
+        "404":
+          description: No such user
+          schema:
+            $ref: "#/definitions/Error"
   /user/login:
     post:
+      consumes:
+        - application/json
+      produces:
+        - application/json
       parameters:
         - name: user_credentials
           in: body
@@ -369,55 +471,45 @@ paths:
             $ref: "#/definitions/Error"
       security:
         - user_token: []
-  /chat:
-    get:
-      description: Retrieves id for chat session between two users
-      tags:
-        - chat
-      parameters:
-        - in: body
-          name: chat_users
-          schema:
-            type: array
-            items:
-              title: user_id
-              type: string
-      responses:
-        "200":
-          description: OK
-      security:
-        - user_token: []
+  /chat/authenticate:
     post:
-      description: Create new chat session
+      description: Generates a Layer jwt token for the user
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
       parameters:
         - in: body
-          name: chat_users
-          schema:
-            type: array
-            items:
-              title: user_id
-              type: string
-      tags:
-        - chat
-      responses:
-        "200":
-          description: OK
-      security:
-        - user_token: []
-  "/chat/{sessionId}":
-    delete:
-      description: Remove chat session
-      parameters:
-        - in: path
-          name: sessionId
-          description: ID of session to delete
           required: true
-          type: string
+          name: LayerAuthReq
+          schema:
+            $ref: "#/definitions/LayerAuthReq"
       tags:
         - chat
       responses:
         "200":
           description: OK
+          schema:
+            type: object
+            title: AuthResponse
+            required:
+              - layer_token
+            properties:
+              layer_token:
+                type: string
+        "400":
+          description: Invalid Input
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Authentication error
+          schema:
+            $ref: "#/definitions/Error"
+        "404":
+          description: No such user
+          schema:
+            $ref: "#/definitions/Error"
       security:
         - user_token: []
 definitions:
@@ -428,7 +520,7 @@ definitions:
       - item_id
       - item_title
       - item_description
-      - item_picture
+      - item_image
     properties:
       item_id:
         type: string
@@ -438,7 +530,7 @@ definitions:
         type: string
       item_description:
         type: string
-      item_picture:
+      item_image:
         type: string
         format: byte
   Liked:
@@ -556,6 +648,17 @@ definitions:
         type: array
         items:
           type: integer
+  LayerAuthReq:
+    type: object
+    required:
+      - user_id
+      - nonce
+    title: LayerAuthReq
+    properties:
+      user_id:
+        type: integer
+      nonce:
+        type: integer
   Error:
     properties:
       message:

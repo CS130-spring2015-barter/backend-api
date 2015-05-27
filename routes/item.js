@@ -106,11 +106,14 @@ module.exports = function(db) {
 
 	//create a new item
 	router.post('/', function(req, res, next) {
+		if (req.get('Content-Type') != 'application/json') {
+			return res.status(500).send({message: "Only acceptable Content-type is application/json!"});
+		}
 
 		var data = {
 			uid: req.body.user_id,
 			title: req.body.item_title,
-			image: req.files.item_picture.buffer,
+			image: req.body.item_image,
 			description: req.body.item_description
 		};
 

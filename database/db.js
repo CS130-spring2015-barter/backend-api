@@ -126,7 +126,8 @@ module.exports = function(callback) {
 
 		//update item info
 		db.updateItem = function(data, cb) {
-			client.query('UPDATE items SET item_description = $1, item_title = $2, item_image = $3 WHERE id = $4', [data.description, data.title, data.image, data.iid], function(err, result) {
+			client.query('UPDATE items SET item_description = $1, item_title = $2, item_image = $3 WHERE id = $4',
+			[data.item_description, data.item_title, data.item_image, data.id], function(err, result) {
 				cb(err, result);
 			});
 		};

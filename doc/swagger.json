@@ -8,6 +8,9 @@
     "paths": {
         "/item/geo": {
             "get": {
+                "produces": [
+                    "application/json"
+                ],
                 "parameters": [
                     {
                         "name": "lat",
@@ -68,6 +71,12 @@
         },
         "/item": {
             "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "parameters": [
                     {
                         "in": "body",
@@ -117,6 +126,9 @@
         },
         "/item/{item_id}": {
             "get": {
+                "produces": [
+                    "application/json"
+                ],
                 "description": "Retrieves info for an item by id",
                 "tags": [
                     "item"
@@ -163,6 +175,12 @@
                 ]
             },
             "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "description": "Updates an existing item posting",
                 "parameters": [
                     {
@@ -247,6 +265,9 @@
         },
         "/item/liked": {
             "get": {
+                "produces": [
+                    "application/json"
+                ],
                 "description": "Retrieves up to n item ids that have been liked by a user. n defaults to 20.",
                 "tags": [
                     "item"
@@ -296,6 +317,12 @@
                 ]
             },
             "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "parameters": [
                     {
                         "in": "body",
@@ -336,6 +363,12 @@
         },
         "/item/seen": {
             "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "description": "Adds items that have been \"seen\" by a user.",
                 "tags": [
                     "item"
@@ -366,6 +399,12 @@
         },
         "/user": {
             "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "parameters": [
                     {
                         "name": "user",
@@ -404,6 +443,9 @@
         },
         "/user/{user_id}": {
             "get": {
+                "produces": [
+                    "application/json"
+                ],
                 "description": "Gets information for a user",
                 "tags": [
                     "user"
@@ -450,6 +492,12 @@
                 ]
             },
             "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "description": "Edits a user's information",
                 "parameters": [
                     {
@@ -534,6 +582,12 @@
         },
         "/user/login": {
             "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
                 "parameters": [
                     {
                         "name": "user_credentials",
@@ -689,7 +743,7 @@
                 "item_id",
                 "item_title",
                 "item_description",
-                "item_picture"
+                "item_image"
             ],
             "properties": {
                 "item_id": {
@@ -704,7 +758,7 @@
                 "item_description": {
                     "type": "string"
                 },
-                "item_picture": {
+                "item_image": {
                     "type": "string",
                     "format": "byte"
                 }

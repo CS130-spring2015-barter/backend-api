@@ -106,16 +106,19 @@ module.exports = function(db) {
 
 	//create a new item
 	router.post('/', function(req, res, next) {
+		if (req.get('Content-Type') != 'application/json') {
+			return res.status(500).send({message: "Only acceptable Content-type is application/json!"});
+		}
 
 		var data = {
 			uid: req.body.user_id,
 			title: req.body.item_title,
-			image: req.files.item_picture.buffer,
+			image: req.body.item_image,
 			description: req.body.item_description
 		};
 
 		db.createItem(data, function(err, itemCreated) {
-			if (err) next(err);
+			if (err) return next(err);
 			if (itemCreated)
 				res.send({item_id: itemCreated.rows[0].id});
 			else
@@ -142,7 +145,7 @@ module.exports = function(db) {
 	router.put('/:itemId', function(req, res, next) {
 		req.body.id = req.params.itemId;
 		db.updateItem(req.body, function(err, itemUpdated) {
-			if (err) next(err);
+			if (err) return next(err);
 			if (itemUpdated)
 				res.sendStatus(200);
 			else
@@ -156,7 +159,7 @@ module.exports = function(db) {
 		data.id = req.params.itemId;
 
 		db.deleteItem(data, function(err, itemDeleted) {
-			if (err) next(err);
+			if (err) return next(err);
 			if (itemDeleted)
 				res.sendStatus(200);
 			else

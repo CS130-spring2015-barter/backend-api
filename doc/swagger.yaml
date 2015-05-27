@@ -365,6 +365,36 @@ paths:
             $ref: "#/definitions/Error"
       security:
         - user_token: []
+  "/user/{user_id}/item":
+    get:
+      produces:
+        - application/json
+      description: Retrieves items for a user
+      tags:
+        - user
+      parameters:
+        - in: path
+          name: user_id
+          description: ID of user to fetch items for
+          required: true
+          type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: "#/definitions/ItemIds"
+        "400":
+          description: Invalid Input
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Authentication error
+          schema:
+            $ref: "#/definitions/Error"
+        "404":
+          description: No such user
+          schema:
+            $ref: "#/definitions/Error"
   /user/login:
     post:
       consumes:

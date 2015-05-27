@@ -134,5 +134,32 @@ module.exports = function(db) {
 		});
 	});
 
+	//gets items for a specific user
+	router.get('/:userId/item', function(req, res, next) {
+		var user_id = req.params.userId;
+		// make sure user exists
+		db.getUserInfo(user_id, function(err, result) {
+			if (err) {
+				return next(err);
+			}
+			if (result.rows.length == 0) {
+				return res.status(404).send({message: "No such user!"});
+			}
+
+			// retrieve users items from db
+			db.getUserItems({user_id: user_id}, function(err, result) {
+				if (err) {
+					return next(err);
+				}
+				var userItems = {};
+				userItems.item_ids = [];
+				for (var i = 0; i < result.rows.length; i++) {
+					userItems.item_ids.push(result.rows[i].item_id);
+				}
+				return res.send(userItems);
+			});
+		});
+	});
+
 	return router;
 };

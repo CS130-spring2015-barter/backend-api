@@ -87,6 +87,12 @@ module.exports = function(callback) {
 			});
 		};
 
+		db.getUserItems = function(data, cb) {
+			client.query('SELECT items.id as item_id FROM items,user WHERE items.user_id = $1 LIMIT $2' ,[data.user_id, data.max_items] , function(err,result) {
+				cb(err,result);
+			})
+		}
+
 		//insert a new item into the table
 		db.createItem = function(data, cb) {
 			client.query('INSERT INTO items(user_id, item_title, item_description, item_image) VALUES ($1,$2,$3,$4) RETURNING id', [data.uid, data.title, data.description, data.image], function(err, result) {

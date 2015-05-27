@@ -46,6 +46,42 @@ paths:
       security:
         - user_token: []
   /item:
+    get:
+      description: Returns item(s) by id
+      produces:
+        - application/json
+      parameters:
+        - in: query
+          name: ids
+          required: true
+          type: array
+          items:
+            type: integer
+          collectionFormat: csv
+      tags:
+        - item
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: array
+            title: ItemInfos
+            items: 
+              $ref: "#/definitions/Item"
+        "400":
+          description: Invalid Input
+          schema:
+            $ref: "#/definitions/Error"
+        "401":
+          description: Authentication Error
+          schema:
+            $ref: "#/definitions/Error"
+        "404":
+          description: One of the requested items doesn't exist
+          schema:
+            $ref: "#/definitions/Error"
+      security:
+        - user_token: []
     post:
       consumes:
         - application/json
@@ -476,7 +512,6 @@ paths:
             $ref: "#/definitions/Error"
       security:
         - user_token: []
-      
 definitions:
   Item:
     type: object

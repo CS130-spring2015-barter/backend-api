@@ -8,7 +8,7 @@ module.exports = function(db) {
 		var data = {
 			user_id: req.query.user_id
 		};
-		
+
 		if (!req.query.user_id)
 			res.end({err: 'must include "user_id" in the query'});
 		if (req.query.max_items) {
@@ -195,6 +195,20 @@ module.exports = function(db) {
 				likingUsers.user_ids.push(result.rows[i].user_id);
 			}
 			return res.send(likingUsers);
+		});
+	});
+
+	// retrieve an image for an item by id
+	router.get('/:itemId/image', function(req,res,next) {
+		db.getItemImage({item_id: req.params.itemId}, function(err, result) {
+			if (err) {
+				return res.sendStatus(500);
+			}
+			// item doesn't exist if we couldn't retrieve its image
+			if (result.rows.length == 0) {
+				return res.status(404).send({message: "No such item!"});
+			}
+			return res.send({item_image: result.rows[0].item_image});
 		});
 	});
 

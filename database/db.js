@@ -36,6 +36,13 @@ module.exports = function(callback) {
 			});
 		};
 
+		// get image for an item
+		db.getItemImage = function(data,cb) {
+			client.query('SELECT item_image FROM items WHERE id = $1', [data.item_id], function(err, result) {
+				cb(err,result);
+			});
+		};
+
 		// get users that have liked an item
 		db.getItemLikers = function(data, cb) {
 			// make sure item exists

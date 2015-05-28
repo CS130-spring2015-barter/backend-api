@@ -36,6 +36,23 @@ module.exports = function(callback) {
 			});
 		};
 
+		// get users that have liked an item
+		db.getItemLikers = function(data, cb) {
+			// make sure item exists
+			client.query('SELECT id FROM items WHERE id = $1', [data.item_id], function(err,result) {
+				if (err) {
+					return cb(err,result);
+				}
+				else if (result.rows.length == 0) {
+					return cb({missingMessage: "Item doesn't exist!"}, result);
+				}
+				// item exists, get the liking users
+				client.query('SELECT DISTINCT user_id FROM likedItems WHERE item_id = $1', [data.item_id], function(err,result) {
+						return cb(err,result);
+				});
+			});
+		};
+
 		// get info for collection of item ids
 		db.getItemsInfo = function(data, cb) {
 			// generate query string for selecting on multiple ids
@@ -158,7 +175,7 @@ module.exports = function(callback) {
 			//if we received no data to update then don't do anything
 			if (!data.item_description && !data.item_title && !data.item_image)
 				cb(null, true);
-			
+
 			var query = 'UPDATE items SET';
 			var firstClause = true;
 

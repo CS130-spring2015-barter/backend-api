@@ -5,7 +5,12 @@ module.exports = function(db) {
 
 	//get a list of 25 items that the user hasn't seen yet in geographic order
 	router.get('/geo', function(req, res, next) {
-		var data = {}
+		var data = {
+			user_id: req.query.user_id
+		};
+		
+		if (!req.query.user_id)
+			res.end({err: 'must include "user_id" in the query'});
 		if (req.query.max_items) {
 			data.num = req.query.max_items;
 		}

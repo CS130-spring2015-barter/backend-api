@@ -10,14 +10,11 @@ module.exports = function(db) {
 			data.num = req.query.max_items;
 		}
 		else {
-			data.num = 15;
+			data.num = 5;
 		}
 		db.getNItems(data, function(err, items) {
 			if (err) return next(err);
-			for (var i = 0; i < items.length; i++) {
-				items[i].item_id = items[i].item_id;
-				delete items[i].item_id;
-			}
+
 			res.send(items);
 		});
 		/*

@@ -31,7 +31,7 @@ module.exports = function(callback) {
 
 		// get info for an item
 		db.getItemInfo = function(data, cb) {
-			client.query('SELECT * FROM items WHERE id = $1', [data.itemId], function(err,result) {
+			client.query('SELECT id,item_description,item_title,user_id FROM items WHERE id = $1', [data.itemId], function(err,result) {
 					cb(err,result);
 			});
 		};

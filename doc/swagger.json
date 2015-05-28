@@ -41,7 +41,7 @@
                         "format": "integer"
                     }
                 ],
-                "description": "Fetches geographically sorted items that a given user hasn't seen. If not specified, maximum number of items returned will be 20",
+                "description": "Fetches geographically sorted items that a given user hasn't seen. If not specified, maximum number of items returned will be 5",
                 "tags": [
                     "item"
                 ],

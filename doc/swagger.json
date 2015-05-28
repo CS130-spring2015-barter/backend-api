@@ -319,6 +319,51 @@
                 ]
             }
         },
+        "/item/{item_id}/user": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "description": "Retrieves an array of user_ids that liked a given item",
+                "tags": [
+                    "item"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "required": true,
+                        "name": "item_id",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/UserIds"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "No such item",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/item/liked": {
             "get": {
                 "produces": [
@@ -641,7 +686,7 @@
                 "produces": [
                     "application/json"
                 ],
-                "description": "Retrieves items for a user",
+                "description": "Retrieves items that a user posted",
                 "tags": [
                     "user"
                 ],
@@ -991,6 +1036,20 @@
                 },
                 "password": {
                     "type": "string"
+                }
+            }
+        },
+        "UserIds": {
+            "required": [
+                "user_ids"
+            ],
+            "type": "object",
+            "properties": {
+                "user_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },

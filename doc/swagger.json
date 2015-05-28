@@ -32,6 +32,13 @@
                         "type": "integer",
                         "required": false,
                         "in": "query"
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "required": true,
+                        "type": "number",
+                        "format": "integer"
                     }
                 ],
                 "description": "Fetches geographically sorted items that a given user hasn't seen. If not specified, maximum number of items returned will be 20",

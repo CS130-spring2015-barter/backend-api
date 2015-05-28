@@ -15,14 +15,11 @@ module.exports = function(db) {
 			data.num = req.query.max_items;
 		}
 		else {
-			data.num = 15;
+			data.num = 5;
 		}
 		db.getNItems(data, function(err, items) {
 			if (err) return next(err);
-			for (var i = 0; i < items.length; i++) {
-				items[i].item_id = items[i].item_id;
-				delete items[i].item_id;
-			}
+
 			res.send(items);
 		});
 		/*
@@ -176,6 +173,28 @@ module.exports = function(db) {
 				delete infos[i].id;
 			}
 			return res.send(infos);
+		});
+	});
+
+	// retrieve user ids who have liked a given item
+	router.get('/:itemId/user', function(req,res,next) {
+		var itemId = req.params.itemId;
+		db.getItemLikers({item_id: itemId}, function(err, result) {
+			if (err) {
+				// item doesn't exist error
+				if (err.missingMessage) {
+					return res.status(500).send({message: err.missingMessage});
+				}
+				else {
+					return res.sendStatus(500);
+				}
+			}
+			var likingUsers = {};
+			likingUsers.user_ids = [];
+			for (var i = 0; i < result.rows.length; i++) {
+				likingUsers.user_ids.push(result.rows[i].user_id);
+			}
+			return res.send(likingUsers);
 		});
 	});
 

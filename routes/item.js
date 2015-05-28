@@ -174,6 +174,28 @@ module.exports = function(db) {
 		});
 	});
 
+	// retrieve user ids who have liked a given item
+	router.get('/:itemId/user', function(req,res,next) {
+		var itemId = req.params.itemId;
+		db.getItemLikers({item_id: itemId}, function(err, result) {
+			if (err) {
+				// item doesn't exist error
+				if (err.missingMessage) {
+					return res.status(500).send({message: err.missingMessage});
+				}
+				else {
+					return res.sendStatus(500);
+				}
+			}
+			var likingUsers = {};
+			likingUsers.user_ids = [];
+			for (var i = 0; i < result.rows.length; i++) {
+				likingUsers.user_ids.push(result.rows[i].user_id);
+			}
+			return res.send(likingUsers);
+		});
+	});
+
 	//updates an existing item
 	router.put('/:itemId', function(req, res, next) {
 		req.body.id = req.params.itemId;

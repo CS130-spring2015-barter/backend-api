@@ -55,16 +55,20 @@ module.exports = function(callback) {
 			});
 		};
 
-		//Returns 15 items closest to the user that he hasn't seen yet
+		//Returns items closest to the user that the user hasn't seen yet
+		//data has fields: latitude, longitude, and max_items
 		db.getLocalItems = function(data, cb) {
-			client.query('SELECT items.id AS item_id, items.user_id AS userId, item_description, item_title, item_image ' +
-				'FROM items, users, seenitems ' +
-				'WHERE users.id = items.user_id AND ' + //join items to their users
-					'seenitems.user_id = users.id AND ' + //join seenitems to the user
-					'seenitems.item_id != items.id' + //outer join seenitems to items (AKA items that have been seen are excluded from what is returned)
+			client.query('SELECT items.id AS itemId, items.user_id AS userId, item_description, item_title, item_image ' +
+				'FROM items, users, seenitems, likeditems ' +
+				'WHERE seenitems.user_id = $3 AND ' + //seenitems is now just items the user has seen
+				'seenitems.item_id != items.id AND ' + //exclude items that this user has seen
+				'likeditems.user_id = $3 AND ' + //likeditems is not just items the user has liked
+				'likeditems.item_id != items.id AND ' + //exclude items that this user has liked
+				'users.id = items.user_id AND ' + //join on users to use user location data
+				'items.last_modified + interval "14 days" > NOW() ' + //don't pull items that are older than 2 weeks
 				'ORDER BY earth_distance(ll_to_earth(users.latitude, users.longitude), ll_to_earth($1, $2)) ' +
-				'LIMIT 15', //limit to 15 items
-				[data.latitude, data.longitude],
+				'LIMIT $4',
+				[data.latitude, data.longitude, data.user_id, max_items],
 				function(err, result) {
 					cb(err, result.rows);
 			});

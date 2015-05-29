@@ -83,7 +83,7 @@ module.exports = function(db) {
 
 			// generate token for this user
 			var payload = { user_id: user.id};
-			var token = jwt.encode(payload, 'testsecretdontusethis');
+			var token = jwt.encode(payload, process.env.JWT_SECRET);
 	    return res.send({token: token, user_id: user.id});
 	  })(req, res, next);
 	});

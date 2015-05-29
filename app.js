@@ -46,7 +46,7 @@ module.exports = function(dbObject) {
 
 	// setup jwt authentication middleware
 	app.use(expjwt({
-	  secret: 'testsecretdontusethis',
+	  secret: process.env.JWT_SECRET,
 	  credentialsRequired: true,
 	  getToken: function fromHeaderOrQuerystring (req) {
 	    if (req.headers.authorization) {

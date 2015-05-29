@@ -69,6 +69,22 @@ module.exports = function(db) {
 		});
 	});
 
+	// Removes all items from a user's seen list
+	// TODO: make sure user exists
+	router.delete('/seen', function(req,res,next) {
+		if (!req.query.user_id) {
+			return res.status(500).send({message: "Must provide user_id"});
+		}
+
+		db.deleteAllUserSeen({user_id: req.query.user_id}, function(err,result) {
+			if (err) {
+				return next(err);
+			}
+
+			return res.sendStatus(200);
+		});
+	});
+
 	//gets item_ids that a user has liked
 	router.get('/liked', function(req, res, next) {
 		var userId = req.query.user_id
@@ -131,6 +147,21 @@ module.exports = function(db) {
 				else
 					res.sendStatus(500);
 			});
+		});
+	});
+
+	// TODO: make sure user exists
+	router.delete('/liked', function(req,res,next) {
+		if (!req.query.user_id) {
+			return res.status(500).send({message: "Must provide user_id"});
+		}
+
+		db.deleteAllUserLiked({user_id: req.query.user_id}, function(err,result) {
+			if (err) {
+				return next(err);
+			}
+
+			return res.sendStatus(200);
 		});
 	});
 

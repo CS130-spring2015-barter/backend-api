@@ -45,7 +45,7 @@
                             "title": "items",
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/Item"
+                                "$ref": "#/definitions/BasicItemInfo"
                             }
                         }
                     },
@@ -97,7 +97,7 @@
                             "type": "array",
                             "title": "ItemInfos",
                             "items": {
-                                "$ref": "#/definitions/Item"
+                                "$ref": "#/definitions/BasicItemInfo"
                             }
                         }
                     },
@@ -202,7 +202,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/Item"
+                            "$ref": "#/definitions/BasicItemInfo"
                         }
                     },
                     "400": {
@@ -307,6 +307,57 @@
                     },
                     "401": {
                         "description": "Authentication Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "user_token": []
+                    }
+                ]
+            }
+        },
+        "/item/{item_id}/image": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "description": "Retrieves image for an item by id",
+                "tags": [
+                    "item"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "item_id",
+                        "description": "ID of item to retrieve info",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "item_image": {
+                                    "type": "string",
+                                    "format": "byte"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Item doesn't exist",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -861,6 +912,29 @@
         }
     },
     "definitions": {
+        "BasicItemInfo": {
+            "type": "object",
+            "required": [
+                "user_id",
+                "item_id",
+                "item_title",
+                "item_description"
+            ],
+            "properties": {
+                "item_id": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                },
+                "item_title": {
+                    "type": "string"
+                },
+                "item_description": {
+                    "type": "string"
+                }
+            }
+        },
         "Item": {
             "type": "object",
             "required": [

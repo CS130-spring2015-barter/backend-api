@@ -76,17 +76,19 @@ module.exports = function(callback) {
 		//data has fields: latitude, longitude, and max_items
 		db.getLocalItems = function(data, cb) {
 			client.query('SELECT items.id AS itemId, items.user_id AS userId, item_description, item_title, item_image ' +
-				'FROM items, users, seenitems, likeditems ' +
-				'WHERE seenitems.user_id = $3 AND ' + //seenitems is now just items the user has seen
-				'seenitems.item_id != items.id AND ' + //exclude items that this user has seen
-				'likeditems.user_id = $3 AND ' + //likeditems is not just items the user has liked
-				'likeditems.item_id != items.id AND ' + //exclude items that this user has liked
+				'FROM items, users ' +
+				'LEFT OUTER JOIN seenitems ON seenitems.user_id = $3 ' +
+				'LEFT OUTER JOIN likeditems ON likeditems.user_id = $3 ' +
+				'WHERE (seenitems.item_id != items.id OR seenitems.id is null) AND ' + //exclude items that this user has seen
+				'(likeditems.item_id != items.id OR likeditems.id is null) AND ' + //exclude items that this user has liked
 				'users.id = items.user_id AND ' + //join on users to use user location data
-				'items.last_modified + interval "14 days" > NOW() ' + //don't pull items that are older than 2 weeks
-				'ORDER BY earth_distance(ll_to_earth(users.latitude, users.longitude), ll_to_earth($1, $2)) ' +
+				"items.last_modified + interval '14 days' > NOW() " + //don't pull items that are older than 2 weeks
+				'ORDER BY earth_distance(ll_to_earth(users.latitude::float8, users.longitude::float8), ll_to_earth($1, $2)) ' +
 				'LIMIT $4',
-				[data.latitude, data.longitude, data.user_id, max_items],
+				[data.latitude, data.longitude, data.user_id, data.max_items],
 				function(err, result) {
+					if (err)
+						return cb(err, null);
 					cb(err, result.rows);
 			});
 		};

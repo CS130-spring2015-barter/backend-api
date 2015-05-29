@@ -155,6 +155,12 @@ module.exports = function(callback) {
 			});
 		};
 
+		db.deleteLikedItem = function(data,cb) {
+			client.query('DELETE FROM likedItems WHERE user_id = $1 AND item_id = $2 RETURNING item_id', [data.user_id, data.item_id], function(err,result) {
+				cb(err,result);
+			});
+		};
+
 		//add an item that has been seen, no duplicates
 		db.addItemSeen = function(data, cb) {
 			client.query('INSERT INTO seenItems(user_id, item_id) SELECT $1, $2 WHERE NOT EXISTS( \

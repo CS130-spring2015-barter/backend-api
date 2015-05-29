@@ -23,7 +23,7 @@ module.exports = function(db) {
 			max_items: req.query.max_items || 5,
 			user_id: req.query.user_id
 		};
-		
+
 		db.getGeolocatedItems(data, function(err, items) {
 			if (err) next(err);
 			res.send(items);
@@ -130,6 +130,32 @@ module.exports = function(db) {
 					res.sendStatus(200);
 				else
 					res.sendStatus(500);
+			});
+		});
+	});
+
+	// remove a given item from a users "liked" collection
+	router.delete('/:itemId/liked', function(req,res,next) {
+		if (!req.query.user_id) {
+			return res.status(500).send({message: "Must provide user_id!"});
+		}
+
+		db.deleteLikedItem({user_id: req.query.user_id, item_id: req.params.itemId}, function(err, result) {
+			if (err) {
+				return next(err);
+			}
+			// deleteLikedItem query returns the id that was deleted, if nothing returned, the item wasn't liked
+			if (result.rows.length ==  0) {
+				return res.status(500).send({message: "Item wasn't liked!"});
+			}
+
+			db.addItemSeen({uid: req.query.user_id, iid: req.params.itemId}, function(err,result) {
+				if (err) {
+					return next(err);
+				}
+
+				// successfully added item to the seen table
+				return res.sendStatus(200);
 			});
 		});
 	});

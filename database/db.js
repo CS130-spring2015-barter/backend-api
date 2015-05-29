@@ -87,27 +87,29 @@ module.exports = function(callback) {
 					if (err)
 						return cb(err, null);
 					
-					console.log(itemsNotYours.rows);
-					client.query('SELECT item_id FROM seenitems WHERE user_id != $1', [data.user_id], function(err, seenItems) {
+					client.query('SELECT item_id FROM seenitems WHERE user_id = $1', [data.user_id], function(err, seenItems) {
 						if (err)
 							return cb(err, null);
-
-						client.query('SELECT item_id FROM likeditems WHERE user_id != $1', [data.user_id], function(err, likedItems) {
+						
+						client.query('SELECT item_id FROM likeditems WHERE user_id = $1', [data.user_id], function(err, likedItems) {
 							if (err)
 								return cb(err, null);
-
+					
 							var items = itemsNotYours.rows;
+							var seen = seenItems.rows;
+							var liked = likedItems.rows;
 							
-							for (var i = 0; i < seenItems.length; i++) {
+							for (var i = 0; i < seen.length; i++) {
 								for (var j = 0; j < items.length; j++) {
-									if (items[j].item_id == seenItems[i].item_id)
+									if (items[j].item_id == seen[i].item_id) {
 										items.splice(j, 1);
+									}
 								}
 							}
 
-							for (var i = 0; i < likedItems.length; i++) {
+							for (var i = 0; i < liked.length; i++) {
 								for (var j = 0; j < items.length; j++) {
-									if (items[j].item_id == likedItems[i].item_id)
+									if (items[j].item_id == liked[i].item_id)
 										items.splice(j, 1);
 								}
 							}

@@ -30,7 +30,8 @@ module.exports = function(db) {
 		});
 	});
 
-	//set an item as seen by a certain user
+	// set item(s) as seen by a certain user
+	// does NOT allow a user to "see" their own items
 	router.post('/seen', function(req, res, next) {
 		var data = {
 			uid: req.body.user_id
@@ -40,38 +41,42 @@ module.exports = function(db) {
 
 		var dataInputs = [];
 
-		for (var i = 0; i < itemIds.length; i++) {
-			dataInputs.push({
-				uid: req.body.user_id,
-				iid: itemIds[i]
-			});
-		}
+		db.getUserItems({user_id: req.body.user_id}, function(err,userItems) {
+			for (var i = 0; i < itemIds.length; i++) {
+				// check each of the user's items against the potential seen item
+				for (var j = 0; j < userItems.rows.length; j++) {
+					if (itemIds[i] == userItems.rows[j].item_id) {
+						return res.status(500).send({message: "Can't see an item the user owns!"});
+					}
+				}
+				// not a user's item, it can be added
+				dataInputs.push({
+					uid: req.body.user_id,
+					iid: itemIds[i]
+				});
+			}
+			// Add to seenitems
+			async.map(dataInputs, db.addItemSeen, function(err, result) {
+				var inserted = result.reduce(function(prev, cur) {
+					return prev * cur;
+				});
 
-		async.map(dataInputs, db.addItemSeen, function(err, result) {
-			var inserted = result.reduce(function(prev, cur) {
-				return prev * cur;
+				if (inserted)
+					res.sendStatus(200);
+				else
+					res.sendStatus(500);
 			});
-
-			if (inserted)
-				res.sendStatus(200);
-			else
-				res.sendStatus(500);
 		});
 	});
 
-	//set an item as liked by a certain user
+	//gets item_ids that a user has liked
 	router.get('/liked', function(req, res, next) {
 		var userId = req.query.user_id
 		if (!userId) {
 			return res.status(500).send({message: "No user_id supplied!"});
 		}
-		var maxItems = req.query.n;
-		// default max item ids to return to 20
-		if (!maxItems) {
-			maxItems = 20;
-		}
 
-		var data = {userId: userId, maxItems: maxItems};
+		var data = {userId: userId};
 		// Retrive item ids from db
 		db.getLikedItems(data, function(err, result) {
 			if (err)
@@ -86,7 +91,8 @@ module.exports = function(db) {
 		});
 	});
 
-	//set an item as liked by a certain user
+	// set an item as liked by a certain user
+	// does NOT allow a user to like their own item
 	router.post('/liked', function(req, res, next) {
 		var data = {
 			uid: req.body.user_id
@@ -95,22 +101,36 @@ module.exports = function(db) {
 		var itemIds = req.body.item_ids;
 		var dataInputs = [];
 
-		for (var i = 0; i < itemIds.length; i++) {
-			dataInputs.push({
-				uid: req.body.user_id,
-				iid: itemIds[i]
-			});
-		}
+		// make sure user isn't trying to like their own item
+		db.getUserItems({user_id: req.body.user_id}, function(err,userItems) {
+			if (err) return next(err);
 
-		async.map(dataInputs, db.addItemLiked, function(err, result) {
-			var inserted = result.reduce(function(prev, cur) {
-				return prev * cur;
-			});
+			for (var i = 0; i < itemIds.length; i++) {
+				// check each of the user's items against the potential liked item
+				// return error if it is one of the user's items
+				for (var j = 0; j < userItems.rows.length; j++) {
+					if (itemIds[i] == userItems.rows[j].item_id) {
+						return res.status(500).send({message: "Can't like an item the user owns!"});
+					}
+				}
+				// not a user's item, it can be liked
+				dataInputs.push({
+					uid: req.body.user_id,
+					iid: itemIds[i]
+				});
+			}
 
-			if (inserted)
-				res.sendStatus(200);
-			else
-				res.sendStatus(500);
+			// Add all items to likedItems table
+			async.map(dataInputs, db.addItemLiked, function(err, result) {
+				var inserted = result.reduce(function(prev, cur) {
+					return prev * cur;
+				});
+
+				if (inserted)
+					res.sendStatus(200);
+				else
+					res.sendStatus(500);
+			});
 		});
 	});
 

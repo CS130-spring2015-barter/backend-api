@@ -517,6 +517,44 @@
                         "user_token": []
                     }
                 ]
+            },
+            "delete": {
+                "description": "Unlikes all items a user previously liked",
+                "tags": [
+                    "item"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "required": true,
+                        "name": "user_id",
+                        "type": "number",
+                        "format": "integer",
+                        "description": "id of user to unlike all previously liked items"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Invalid Input",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "Authentication Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "user_token": []
+                    }
+                ]
             }
         },
         "/item/seen": {
@@ -553,6 +591,33 @@
                         "user_token": []
                     }
                 ]
+            },
+            "delete": {
+                "description": "Unsees all items a user previously swiped past",
+                "tags": [
+                    "item"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "required": true,
+                        "name": "user_id",
+                        "type": "number",
+                        "format": "integer",
+                        "description": "id of user to clear seen items for"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "401": {
+                        "description": "Authentication Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
             }
         },
         "/user": {

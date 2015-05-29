@@ -164,6 +164,12 @@ module.exports = function(callback) {
 			});
 		};
 
+		db.deleteAllUserLiked = function(data,cb) {
+			client.query('DELETE FROM likedItems WHERE user_id = $1', [data.user_id], function(err,result) {
+				cb(err,result);
+			});
+		};
+
 		//add an item that has been seen, no duplicates
 		db.addItemSeen = function(data, cb) {
 			client.query('INSERT INTO seenItems(user_id, item_id) SELECT $1, $2 WHERE NOT EXISTS( \
@@ -172,6 +178,12 @@ module.exports = function(callback) {
 			});
 		};
 
+		db.deleteAllUserSeen = function(data,cb) {
+			client.query('DELETE FROM seenItems WHERE user_id = $1', [data.user_id], function(err,result) {
+				cb(err,result);
+			});
+		};
+		
 		//delete an item
 		db.deleteItem = function(data, cb) {
 			client.query('DELETE FROM items WHERE id = $1', [data.id], function(err, result) {

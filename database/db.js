@@ -18,7 +18,7 @@ module.exports = function(callback) {
 
 		//Returns N items to the user
 		db.getNItems = function(data, cb) {
-			client.query('SELECT id AS item_id, user_id, item_description, item_title, item_image WHERE user_id != $2 FROM items LIMIT $1', [data.num, data.user_id], function(err, result) {
+			client.query('SELECT id AS item_id, user_id, item_description, item_title, item_image FROM items WHERE user_id != $2 LIMIT $1', [data.num, data.user_id], function(err, result) {
 				cb(err, result.rows);
 			});
 		};

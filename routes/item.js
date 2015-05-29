@@ -24,7 +24,7 @@ module.exports = function(db) {
 			user_id: req.query.user_id
 		};
 		
-		db.getGeolocatedItems(data, function(err, items) {
+		db.getLocalItems(data, function(err, items) {
 			if (err) next(err);
 			res.send(items);
 		});

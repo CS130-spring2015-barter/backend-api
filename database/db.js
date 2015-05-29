@@ -75,7 +75,7 @@ module.exports = function(callback) {
 		//Returns items closest to the user that the user hasn't seen yet
 		//data has fields: latitude, longitude, and max_items
 		db.getLocalItems = function(data, cb) {
-			client.query('SELECT items.id AS itemId, items.user_id AS userId, item_description, item_title, item_image ' +
+			client.query('SELECT items.id AS item_id, items.user_id AS user_id, item_description, item_title, item_image ' +
 				'FROM items, users ' +
 				'LEFT OUTER JOIN seenitems ON seenitems.user_id = $3 ' +
 				'LEFT OUTER JOIN likeditems ON likeditems.user_id = $3 ' +

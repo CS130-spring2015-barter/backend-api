@@ -5,12 +5,7 @@ module.exports = function(db) {
 
 	//get a list of 25 items that the user hasn't seen yet in geographic order
 	router.get('/geo', function(req, res, next) {
-		var data = {
-			user_id: req.query.user_id
-		};
-		
-		if (!req.query.user_id)
-			res.end({err: 'must include "user_id" in the query'});
+		/*var data = {}
 		if (req.query.max_items) {
 			data.num = req.query.max_items;
 		}
@@ -21,13 +16,18 @@ module.exports = function(db) {
 			if (err) return next(err);
 
 			res.send(items);
-		});
-		/*
+		});*/
+		var data = {
+			latitude: req.query.lat,
+			longitude: req.query.long,
+			max_items: req.query.max_items || 5,
+			user_id: req.query.user_id
+		};
+		
 		db.getGeolocatedItems(data, function(err, items) {
 			if (err) next(err);
 			res.send(items);
 		});
-		*/
 	});
 
 	//set an item as seen by a certain user

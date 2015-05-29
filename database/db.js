@@ -82,6 +82,7 @@ module.exports = function(callback) {
 				'WHERE (seenitems.item_id != items.id OR seenitems.id is null) AND ' + //exclude items that this user has seen
 				'(likeditems.item_id != items.id OR likeditems.id is null) AND ' + //exclude items that this user has liked
 				'users.id = items.user_id AND ' + //join on users to use user location data
+				'users.id != $3 AND ' + //don't show items of the user
 				"items.last_modified + interval '14 days' > NOW() " + //don't pull items that are older than 2 weeks
 				'ORDER BY earth_distance(ll_to_earth(users.latitude::float8, users.longitude::float8), ll_to_earth($1, $2)) ' +
 				'LIMIT $4',
